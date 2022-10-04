@@ -1,2 +1,2 @@
 # TOMS
-Criticality scripts for the Turing bifurcation
+Scripts to compute the criticality of the Turing bifurcation
