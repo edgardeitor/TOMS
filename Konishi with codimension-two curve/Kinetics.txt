@@ -1,4 +1,0 @@
-\lambda_{0} \left(\epsilon \left(- u + w\right) + \eta \left(a + u^{2} v - u \left(b + 1\right)\right)\right) + \left(1 - \lambda_{0}\right) \left(c \left(- u + w\right) + \eta \left(a + u^{2} v - u \left(b + 1\right)\right)\right)
-\lambda_{0} \left(\epsilon \left(- v + z\right) + \eta \left(b u - u^{2} v\right)\right) + \left(1 - \lambda_{0}\right) \left(c \left(- v + z\right) + \eta \left(b u - u^{2} v\right)\right)
-\lambda_{0} \left(\epsilon \left(u - w\right) + \eta \left(a + w^{2} z - w \left(b + 1\right)\right)\right) + \left(1 - \lambda_{0}\right) \left(c \left(u - w\right) + \eta \left(a + w^{2} z - w \left(b + 1\right)\right)\right)
-\lambda_{0} \left(\epsilon \left(v - z\right) + \eta \left(b w - w^{2} z\right)\right) + \left(1 - \lambda_{0}\right) \left(c \left(v - z\right) + \eta \left(b w - w^{2} z\right)\right)

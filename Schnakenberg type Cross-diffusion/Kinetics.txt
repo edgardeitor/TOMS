@@ -1,2 +1,0 @@
-a - c u + d v + u^{2} v
-b - d v + h u - u^{2} v

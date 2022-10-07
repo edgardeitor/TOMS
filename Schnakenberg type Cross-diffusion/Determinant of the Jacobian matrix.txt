@@ -1,1 +1,0 @@
-\left(- c - \delta^{2} \mu_{NF} + 2 u v\right) \left(- d - \mu_{NF} - u^{2}\right) - \left(d - h_{1} \mu_{NF} + u^{2}\right) \left(h - h_{2} \mu_{NF} - 2 u v\right)
