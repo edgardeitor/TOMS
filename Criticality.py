@@ -3,6 +3,7 @@ get_ipython().run_line_magic('reset', '-sf')
 
 import os
 import shutil
+import math
 from sys import exit
 from sympy import *
 init_printing()
@@ -26,7 +27,7 @@ except:
     print('The file ' + modelname + '.py could not be run')
     exit()
     
-nvar=len(var)
+nvar = len(var)
 
 '''The script runs the file 'functions.py' '''
 
@@ -188,27 +189,34 @@ elif isinstance(eq,list) and len(eq)==1:
 
 '''The script defines symbols and standard matrices that will be used to find C3.'''
 
-muNF=symbols('mu_NF')
+muNF = symbols('mu_NF')
 
-coefmat0=matrix('coef0mat',nvar,jacobianmat)
-coefmat1=matrix('coef1mat',nvar,Add(jacobianmat,Mul(-1,muNF,diffmatrix)))
-coefmat2=matrix('coef2mat',nvar,Add(jacobianmat,Mul(-1,4,muNF,diffmatrix)))
-coefmat3=matrix('coef3mat',nvar,Add(jacobianmat,Mul(-1,9,muNF,diffmatrix)))
+eigval = symbols('eigval', real=True)
+
+coefmat0 = matrix('coef0mat', nvar, jacobianmat)
+coefmat1 = matrix('coef1mat', nvar, Add(jacobianmat, Mul(-1, muNF, diffmatrix), Mul(-1, eigval, eye(nvar))))
+coefmat2 = matrix('coef2mat', nvar, Add(jacobianmat, Mul(-1, 4, muNF, diffmatrix)))
+coefmat3 = matrix('coef3mat', nvar, Add(jacobianmat, Mul(-1, 9, muNF, diffmatrix)))
 
 '''The Jacobian matrix can be complicated algebraically so the script computes the determinant of a
 dummy matrix to simplify the process.'''
 
-jacobianmatdet=coefmat1.dummy.det()
+jacobianmatdet = coefmat1.dummy.det()
 
 '''The script then replaces the actual entries of the dummy matrix in the expression of the determinant.'''
 
 for row in range(nvar):
     for col in range(nvar):
-        jacobianmatdet=jacobianmatdet.subs(coefmat1.dummy[row,col],coefmat1.actualcoord[row,col])
+        jacobianmatdet = jacobianmatdet.subs(coefmat1.dummy[row, col], coefmat1.actualcoord[row, col])
 
-determinantderivative=diff(jacobianmatdet,muNF)
-determinanteval=jacobianmatdet
-derivativeeval=determinantderivative
+nonzero = diff(jacobianmatdet, eigval).subs(eigval, 0)
+coefmat1.actualcoord = coefmat1.actualcoord.subs(eigval, 0)
+jacobianmatdet = jacobianmatdet.subs(eigval, 0)
+
+determinantderivative = diff(jacobianmatdet, muNF)
+
+determinanteval = jacobianmatdet
+derivativeeval = determinantderivative
 
 '''If the script finds at least one equilibrium, it evaluates the determinant and the Jacobian
 matrix at the parameters provided.'''
@@ -383,11 +391,14 @@ else:
     
 '''The script saves the functions to find a bifurcation into text files.'''
     
-file=open('Determinant of the Jacobian matrix.txt','w')
+file = open('Determinant of the Jacobian matrix.txt', 'w')
 file.write(latex(jacobianmatdet))
 file.close()
-file=open('Derivative of the Determinant.txt','w')
+file = open('Derivative of the Determinant.txt', 'w')
 file.write(latex(determinantderivative))
+file.close()
+file = open("Non-zero variable.txt",'w')
+file.write(latex(nonzero))
 file.close()
 
 # Normal form
@@ -426,14 +437,14 @@ for counter1 in range(nvar):
                     fifthorderderivatives[counter1][counter2][counter3][counter4].append(
                         diff(fourthorderderivatives[counter1][counter2][counter3][counter4], var[counter5]))
 
-phiNF=Vector('phi^NF')
-Q02NF=Vector('Q02^NF')
-Q22NF=Vector('Q22^NF')
-psiNF=Vector('psi^NF')
-Q13NF=Vector('Q13^NF')
-Q33NF=Vector('Q33^NF')
-Q04NF=Vector('Q04^NF')
-Q24NF=Vector('Q24^NF')
+phiNF = Vector('phi^NF')
+Q02NF = Vector('Q02^NF')
+Q22NF = Vector('Q22^NF')
+psiNF = Vector('psi^NF')
+Q13NF = Vector('Q13^NF')
+Q33NF = Vector('Q33^NF')
+Q04NF = Vector('Q04^NF')
+Q24NF = Vector('Q24^NF')
 
 getout=0
 
@@ -463,43 +474,43 @@ if eq!=[]:
         if getout==1:
             break
 else:
-    submatrixrows=list(range(nvar))
-    submatrixcols=list(range(nvar))
+    submatrixrows = list(range(nvar))
+    submatrixcols = list(range(nvar))
     submatrixrows.remove(0)
     submatrixcols.remove(0)
     invertiblesubmatrix=coefmat1.actualcoord.extract(submatrixrows,submatrixcols)
-    criticalrow=0
-    criticalcol=0
+    criticalrow = 0
+    criticalcol = 0
     
-coefsubmatrix=matrix('dummysubmatrix',nvar-1,invertiblesubmatrix)
+coefsubmatrix = matrix('dummysubmatrix',nvar-1,invertiblesubmatrix)
 
 '''The script defines the vector \phi_1^1 that spans the kernel of the Jacobian matrix with dummy matrices.'''
 
-auxiliaryterm,=linsolve(Add(Mul(coefsubmatrix.dummy,Matrix(phiNF.actualcoord).extract(submatrixcols,[0])),
-                           coefmat1.dummy.extract(submatrixrows,[criticalcol])),
-                        list(Matrix(phiNF.actualcoord).extract(submatrixcols,[0])))
+auxiliaryterm, = linsolve(Add(Mul(coefsubmatrix.dummy, Matrix(phiNF.actualcoord).extract(submatrixcols, [0])),
+                              coefmat1.dummy.extract(submatrixrows, [criticalcol])),
+                          list(Matrix(phiNF.actualcoord).extract(submatrixcols, [0])))
     
-phiNF.actualcoord[0:criticalcol]=auxiliaryterm[0:criticalcol]
-phiNF.actualcoord[criticalcol+1:nvar]=auxiliaryterm[criticalcol:nvar-1]
+phiNF.actualcoord[0:criticalcol] = auxiliaryterm[0:criticalcol]
+phiNF.actualcoord[criticalcol+1:nvar] = auxiliaryterm[criticalcol:nvar-1]
 
-phiNF.actualcoord=Matrix(phiNF.actualcoord)
+phiNF.actualcoord = Matrix(phiNF.actualcoord)
     
 '''The script replaces the dummy variables by the actual values.'''
 
 for row in range(nvar):
     for col in range(nvar):
-        phiNF.actualcoord=phiNF.actualcoord.subs(coefmat1.dummy[row,col],coefmat1.actualcoord[row,col])
+        phiNF.actualcoord = phiNF.actualcoord.subs(coefmat1.dummy[row,col],coefmat1.actualcoord[row,col])
         if row<nvar-1 and col<nvar-1:
-            phiNF.actualcoord=phiNF.actualcoord.subs(coefsubmatrix.dummy[row,col],coefsubmatrix.actualcoord[row,col])
+            phiNF.actualcoord = phiNF.actualcoord.subs(coefsubmatrix.dummy[row,col],coefsubmatrix.actualcoord[row,col])
 
 '''The script normalizes the \phi_1^1 if requested.'''
 
 if phiunit=='y':
-    phiNF.actualcoord=Mul(Pow(sqrt(phiNF.actualcoord.dot(phiNF.actualcoord)),-1),phiNF.actualcoord)
+    phiNF.actualcoord = Mul(Pow(sqrt(phiNF.actualcoord.dot(phiNF.actualcoord)),-1), phiNF.actualcoord)
     
-hatphiNF=Vector('hatphiNF')
-hatphiNF.dummy=Matrix(phiNF.dummy[0:nvar-numberofzerotemporalderivatives]
-                      + [0]*numberofzerotemporalderivatives)
+hatphiNF = Vector('hatphiNF')
+hatphiNF.dummy = Matrix(phiNF.dummy[0:nvar-numberofzerotemporalderivatives]
+                        + [0]*numberofzerotemporalderivatives)
 
 print('First-order ready')
 
@@ -511,9 +522,7 @@ negativeRHS.actualcoord = DS_phiphi
 
 Q02NF.actualcoord = linearsolver(Q02NF, negativeRHS, coefmat0)
 
-negativeRHS.actualcoord = Mul(Pow(2,-1), DS_phiphi)
-
-Q22NF.actualcoord=linearsolver(Q22NF, negativeRHS, coefmat2)
+Q22NF.actualcoord = linearsolver(Q22NF, negativeRHS, coefmat2)
         
 print('Second-order ready')
 
@@ -524,52 +533,54 @@ DS_phiQ22 = secondorderapplied(phiNF, Q22NF)
 
 TS_phiphiphi = thirdorderapplied(phiNF, phiNF, phiNF)
     
-Tdummycoefsubmatrix=transpose(coefsubmatrix.dummy)
-Tdummycoefmat1=transpose(coefmat1.dummy)
+Tdummycoefsubmatrix = transpose(coefsubmatrix.dummy)
+Tdummycoefmat1 = transpose(coefmat1.dummy)
 
-psiNF.actualcoord[criticalrow]=1
+psiNF.actualcoord[criticalrow] = 1
 
 '''The script finds the vector \psi_0^1 that spans the Kernel of the adjoint of the Jacobian matrix.'''
 
-auxiliaryterm,=linsolve(Add(Mul(Tdummycoefsubmatrix,Matrix(psiNF.actualcoord).extract(submatrixrows,[0])),
-                           Tdummycoefmat1.extract(submatrixcols,[criticalrow])),
-                        list(Matrix(psiNF.actualcoord).extract(submatrixrows,[0])))
+auxiliaryterm, = linsolve(Add(Mul(Tdummycoefsubmatrix,Matrix(psiNF.actualcoord).extract(submatrixrows, [0])),
+                              Tdummycoefmat1.extract(submatrixcols, [criticalrow])),
+                          list(Matrix(psiNF.actualcoord).extract(submatrixrows, [0])))
     
-psiNF.actualcoord[0:criticalrow]=auxiliaryterm[0:criticalcol]
-psiNF.actualcoord[criticalrow+1:nvar]=auxiliaryterm[criticalcol:nvar-1]
+psiNF.actualcoord[0:criticalrow] = auxiliaryterm[0:criticalrow]
+psiNF.actualcoord[criticalrow+1:nvar] = auxiliaryterm[criticalrow:nvar-1]
 
-psiNF.actualcoord=Matrix(psiNF.actualcoord)
+psiNF.actualcoord = Matrix(psiNF.actualcoord)
 
 for row in range(nvar):
     for col in range(nvar):
-        psiNF.actualcoord=psiNF.actualcoord.subs(coefmat1.dummy[row,col],coefmat1.actualcoord[row,col])
+        psiNF.actualcoord = psiNF.actualcoord.subs(coefmat1.dummy[row,col],coefmat1.actualcoord[row,col])
         if row<nvar-1 and col<nvar-1:
-            psiNF.actualcoord=psiNF.actualcoord.subs(coefsubmatrix.dummy[row,col],coefsubmatrix.actualcoord[row,col])
+            psiNF.actualcoord = psiNF.actualcoord.subs(coefsubmatrix.dummy[row,col],coefsubmatrix.actualcoord[row,col])
 
 '''The script gets the third-order oefficient.'''
 
-C3=Mul(Pow(hatphiNF.dummy.dot(psiNF.dummy),-1),psiNF.dummy.dot(Add(DS_phiQ02, DS_phiQ22,
-                                                                Mul(Pow(2,-1),TS_phiphiphi))))
+denominator = hatphiNF.dummy.dot(psiNF.dummy)
+
+C3 = Mul(Pow(denominator, -1), psiNF.dummy.dot(Add(Mul(4, DS_phiQ02), Mul(2, DS_phiQ22),
+                                                   Mul(3, TS_phiphiphi))))
 
 '''The script gets the cross-order coefficient if requested.'''
 
 if crosscoef=='y':
     try:
         for varnum in range(nvar):
-            equilibrium[varnum]=eval(equilibrium[varnum])
+            equilibrium[varnum] = eval(equilibrium[varnum])
             
-        crosspar=eval(crosspar)
+        crosspar = eval(crosspar)
             
         SS_phi = crossorderapplied(phiNF, crosspar, equilibrium)
         
-        C11=Mul(Pow(hatphiNF.dummy.dot(psiNF.dummy),-1),
-                psiNF.dummy.dot(Add(SS_phi, Mul(-1, muNF, diff(diffmatrix, crosspar), phiNF.dummy))))
+        C11 = Mul(Pow(hatphiNF.dummy.dot(psiNF.dummy),-1),
+                  psiNF.dummy.dot(Add(SS_phi, Mul(-1, muNF, diff(diffmatrix, crosspar), phiNF.dummy))))
         
         for varnum in range(nvar):
-            C11=C11.subs(phiNF.dummy[varnum], phiNF.actualcoord[varnum])
-            C11=C11.subs(psiNF.dummy[varnum], psiNF.actualcoord[varnum])
+            C11 = C11.subs(phiNF.dummy[varnum], phiNF.actualcoord[varnum])
+            C11 = C11.subs(psiNF.dummy[varnum], psiNF.actualcoord[varnum])
         
-        file=open('Cross-order coefficient.txt','w')        
+        file = open('Cross-order coefficient.txt','w')        
         file.write(latex(C11))
         file.close()
     except:
@@ -579,41 +590,41 @@ if crosscoef=='y':
 '''The script continues with the following orders to find C5 if requested.'''
 
 if fifthcoef=='y':
-    Q13NF.actualcoord[criticalcol]=0
+    Q13NF.actualcoord[criticalcol] = 0
     
     '''The script finds Q_1^3 using an analogous approach to the one used to find \phi_1^1.'''
     
-    auxiliaryterm,=linsolve(Add(Mul(coefsubmatrix.dummy,Matrix(Q13NF.actualcoord).extract(submatrixcols,[0])),
-                                negativeRHS.dummy.extract(submatrixrows,[0])),
-                            list(Matrix(Q13NF.actualcoord).extract(submatrixcols,[0])))
+    negativeRHS.actualcoord = Add(Mul(-1, C3, hatphiNF.dummy), Mul(4, DS_phiQ02), Mul(2, DS_phiQ22),
+                                  Mul(3, TS_phiphiphi))
+    
+    auxiliaryterm, = linsolve(Add(Mul(coefsubmatrix.dummy,Matrix(Q13NF.actualcoord).extract(submatrixcols,[0])),
+                                  negativeRHS.dummy.extract(submatrixrows,[0])),
+                              list(Matrix(Q13NF.actualcoord).extract(submatrixcols,[0])))
         
-    Q13NF.actualcoord[0:criticalcol]=auxiliaryterm[0:criticalcol]
-    Q13NF.actualcoord[criticalcol+1:nvar]=auxiliaryterm[criticalcol:nvar-1]
+    Q13NF.actualcoord[0:criticalcol] = auxiliaryterm[0:criticalcol]
+    Q13NF.actualcoord[criticalcol+1:nvar] = auxiliaryterm[criticalcol:nvar-1]
     
-    Q13NF.actualcoord=Matrix(Q13NF.actualcoord)
-    
-    negativeRHS.actualcoord=Add(Mul(-1, C3, hatphiNF.dummy), DS_phiQ02, DS_phiQ22,
-                                Mul(Pow(2,-1),TS_phiphiphi))
+    Q13NF.actualcoord = Matrix(Q13NF.actualcoord)
     
     for row in range(nvar):
-        Q13NF.actualcoord=Q13NF.actualcoord.subs(negativeRHS.dummy[row],negativeRHS.actualcoord[row])
+        Q13NF.actualcoord = Q13NF.actualcoord.subs(negativeRHS.dummy[row], negativeRHS.actualcoord[row])
         for col in range(nvar-1):
             if row<nvar-1:
-                Q13NF.actualcoord=Q13NF.actualcoord.subs(coefsubmatrix.dummy[row,col],
-                                                         coefsubmatrix.actualcoord[row,col])
+                Q13NF.actualcoord = Q13NF.actualcoord.subs(coefsubmatrix.dummy[row, col],
+                                                           coefsubmatrix.actualcoord[row, col])
     
     '''The script orthogonalizes Q_1^3 with respect to \phi_1^1 if requested.'''
     
     if orthogonal=='y':
         if phiunit=='y':
-            Q13NF.actualcoord = Add(Q13NF.actualcoord, Mul(-1,Q13NF.actualcoord.dot(phiNF.dummy), phiNF.dummy))
+            Q13NF.actualcoord = Add(Q13NF.actualcoord, Mul(-1, Q13NF.actualcoord.dot(phiNF.dummy), phiNF.dummy))
         else:
-            Q13NF.actualcoord = Add(Q13NF.actualcoord, Mul(-1,Q13NF.actualcoord.dot(phiNF.dummy),
-                                                           Pow(phiNF.dummy.dot(phiNF.dummy),-1), phiNF.dummy))
+            Q13NF.actualcoord = Add(Q13NF.actualcoord, Mul(-1, Q13NF.actualcoord.dot(phiNF.dummy),
+                                                           Pow(phiNF.dummy.dot(phiNF.dummy), -1), phiNF.dummy))
         
-    negativeRHS.actualcoord=Add(DS_phiQ22, Mul(Pow(6,-1), TS_phiphiphi))
+    negativeRHS.actualcoord = Add(Mul(2, DS_phiQ22), TS_phiphiphi)
     
-    Q33NF.actualcoord = linearsolver(Q33NF, negativeRHS, coefmat3) # It finds Q_3^3
+    Q33NF.actualcoord = linearsolver(Q33NF, negativeRHS, coefmat3) # The script finds Q_3^3
     
     print('Third-order ready')
     
@@ -631,23 +642,23 @@ if fifthcoef=='y':
     
     Q4S_phiphiphiphi = fourthorderapplied(phiNF, phiNF, phiNF, phiNF)
     
-    hatQ02NF=Vector('hatQ02NF')
-    hatQ02NF.dummy=Matrix(Q02NF.dummy[0:nvar-numberofzerotemporalderivatives]
-                          + [0]*numberofzerotemporalderivatives)
+    hatQ02NF = Vector('hatQ02NF')
+    hatQ02NF.dummy = Matrix(Q02NF.dummy[0:nvar-numberofzerotemporalderivatives]
+                            + [0]*numberofzerotemporalderivatives)
     
-    negativeRHS.actualcoord=Add(Mul(-2, C3, hatQ02NF.dummy), Mul(Pow(2,-1), DS_Q02Q02),
-                                DS_Q22Q22, Mul(2, DS_phiQ13), TS_phiphiQ02,
-                                TS_phiphiQ22, Mul(Pow(4,-1), Q4S_phiphiphiphi))
+    negativeRHS.actualcoord = Add(Mul(-2, C3, hatQ02NF.dummy), Mul(2, DS_Q02Q02),
+                                  DS_Q22Q22, Mul(2, DS_phiQ13), Mul(6, TS_phiphiQ02),
+                                  Mul(3, TS_phiphiQ22), Mul(3, Q4S_phiphiphiphi))
     
     Q04NF.actualcoord = linearsolver(Q04NF, negativeRHS, coefmat0)
     
-    hatQ22NF=Vector('hatQ22NF')
-    hatQ22NF.dummy=Matrix(Q22NF.dummy[0:nvar-numberofzerotemporalderivatives]
-                          + [0]*numberofzerotemporalderivatives)
+    hatQ22NF = Vector('hatQ22NF')
+    hatQ22NF.dummy = Matrix(Q22NF.dummy[0:nvar-numberofzerotemporalderivatives]
+                            + [0]*numberofzerotemporalderivatives)
     
-    negativeRHS.actualcoord=Add(Mul(-2, C3, hatQ22NF.dummy), DS_Q02Q22, DS_phiQ13,
-                                DS_phiQ33, Mul(Pow(2,-1), TS_phiphiQ02), TS_phiphiQ22,
-                                Mul(Pow(6,-1), Q4S_phiphiphiphi))
+    negativeRHS.actualcoord = Add(Mul(-2, C3, hatQ22NF.dummy), Mul(4, DS_Q02Q22), Mul(2, DS_phiQ13),
+                                  Mul(2, DS_phiQ33), Mul(6, TS_phiphiQ02), Mul(6, TS_phiphiQ22),
+                                  Mul(4, Q4S_phiphiphiphi))
     
     Q24NF.actualcoord = linearsolver(Q24NF, negativeRHS, coefmat2)
         
@@ -672,27 +683,26 @@ if fifthcoef=='y':
     
     Q5S_phiphiphiphiphi = fifthorderapplied(phiNF, phiNF, phiNF, phiNF, phiNF)
     
-    hatQ13NF=Vector('hatQ13NF')
-    hatQ13NF.dummy=Matrix(Q13NF.dummy[0:nvar-numberofzerotemporalderivatives]
-                          + [0]*numberofzerotemporalderivatives)
+    hatQ13NF = Vector('hatQ13NF')
+    hatQ13NF.dummy = Matrix(Q13NF.dummy[0:nvar-numberofzerotemporalderivatives]
+                            + [0]*numberofzerotemporalderivatives)
 
-    C5=Mul(Pow(hatphiNF.dummy.dot(psiNF.dummy),-1),
-           psiNF.dummy.dot(Add(Mul(-3, C3, hatQ13NF.dummy), DS_phiQ04, DS_phiQ24, DS_Q02Q13,
-                               DS_Q22Q13, DS_Q22Q33, Mul(3, Pow(2,-1), TS_phiphiQ13),
-                               Mul(Pow(2,-1), TS_phiphiQ33), Mul(Pow(2,-1),TS_phiQ02Q02),
-                               TS_phiQ02Q22, TS_phiQ22Q22, Mul(Pow(2,-1), Q4S_phiphiphiQ02),
-                               Mul(2, Pow(3,-1), Q4S_phiphiphiQ22),
-                               Mul(Pow(12,-1), Q5S_phiphiphiphiphi))))
+    C5 = Mul(Pow(denominator, -1),
+             psiNF.dummy.dot(Add(Mul(-3, C3, hatQ13NF.dummy), Mul(4, DS_phiQ04), Mul(2, DS_phiQ24),
+                                 Mul(4, DS_Q02Q13), Mul(2, DS_Q22Q13), Mul(2, DS_Q22Q33),
+                                 Mul(9, TS_phiphiQ13), Mul(3, TS_phiphiQ33), Mul(12, TS_phiQ02Q02),
+                                 Mul(12, TS_phiQ02Q22), Mul(6, TS_phiQ22Q22), Mul(24, Q4S_phiphiphiQ02),
+                                 Mul(16, Q4S_phiphiphiQ22), Mul(10, Q5S_phiphiphiphiphi))))
     
     print('The calculation of the fifth-order coefficient has been carried out successfully. ' +
           'The saving process could take longer.')
     
 for varnum in range(nvar):
-    C3=C3.subs(Q02NF.dummy[varnum], Q02NF.actualcoord[varnum])
-    C3=C3.subs(Q22NF.dummy[varnum], Q22NF.actualcoord[varnum])
+    C3 = C3.subs(Q02NF.dummy[varnum], Q02NF.actualcoord[varnum])
+    C3 = C3.subs(Q22NF.dummy[varnum], Q22NF.actualcoord[varnum])
 for varnum in range(nvar):
-    C3=C3.subs(psiNF.dummy[varnum], psiNF.actualcoord[varnum])
-    C3=C3.subs(phiNF.dummy[varnum], phiNF.actualcoord[varnum])
+    C3 = C3.subs(psiNF.dummy[varnum], psiNF.actualcoord[varnum])
+    C3 = C3.subs(phiNF.dummy[varnum], phiNF.actualcoord[varnum])
     
 file=open('Third-order coefficient.txt','w')
 file.write(latex(C3))
@@ -707,19 +717,19 @@ if fifthcoef=='n':
         print('Everything but the fifth-order and cross-order coefficients was computed and saved.')
 if fifthcoef=='y':
     for varnum in range(nvar):
-        C5=C5.subs(Q04NF.dummy[varnum], Q04NF.actualcoord[varnum])
-        C5=C5.subs(Q24NF.dummy[varnum], Q24NF.actualcoord[varnum])
+        C5 = C5.subs(Q04NF.dummy[varnum], Q04NF.actualcoord[varnum])
+        C5 = C5.subs(Q24NF.dummy[varnum], Q24NF.actualcoord[varnum])
     for varnum in range(nvar):
-        C5=C5.subs(Q13NF.dummy[varnum], Q13NF.actualcoord[varnum])
-        C5=C5.subs(Q33NF.dummy[varnum], Q33NF.actualcoord[varnum])
+        C5 = C5.subs(Q13NF.dummy[varnum], Q13NF.actualcoord[varnum])
+        C5 = C5.subs(Q33NF.dummy[varnum], Q33NF.actualcoord[varnum])
     for varnum in range(nvar):
-        C5=C5.subs(Q02NF.dummy[varnum], Q02NF.actualcoord[varnum])
-        C5=C5.subs(Q22NF.dummy[varnum], Q22NF.actualcoord[varnum])
+        C5 = C5.subs(Q02NF.dummy[varnum], Q02NF.actualcoord[varnum])
+        C5 = C5.subs(Q22NF.dummy[varnum], Q22NF.actualcoord[varnum])
     for varnum in range(nvar):
-        C5=C5.subs(psiNF.dummy[varnum], psiNF.actualcoord[varnum])
-        C5=C5.subs(phiNF.dummy[varnum], phiNF.actualcoord[varnum])
+        C5 = C5.subs(psiNF.dummy[varnum], psiNF.actualcoord[varnum])
+        C5 = C5.subs(phiNF.dummy[varnum], phiNF.actualcoord[varnum])
     
-    file=open('Fifth-order coefficient.txt','w')
+    file = open('Fifth-order coefficient.txt','w')
     file.write(latex(C5))
     file.close()
     
@@ -766,7 +776,7 @@ if plot2d=='y':
         auxpar=dict()
         
         for key in parameter_functions.keys():
-            auxpar[eval(key)]=eval(parameter_functions[key])
+            auxpar[eval(key)] = eval(parameter_functions[key])
         parameter_functions=auxpar
     except:
         parameter_functions=dict()
@@ -789,11 +799,11 @@ if plot2d=='y':
     try:
         if len(names_of_parameters)==0:
             for parnum in range(2):
-                names_of_parameters[parnum]=latex(parameters_on_axes[parnum])
+                names_of_parameters[parnum] = latex(parameters_on_axes[parnum])
     except:
         names_of_parameters=parameters_on_axes
         for parnum in range(2):
-            names_of_parameters[parnum]=latex(names_of_parameters[parnum])
+            names_of_parameters[parnum] = latex(names_of_parameters[parnum])
         
     file=open('Actual names of parameters.txt','w')
     file.write(names_of_parameters[0] + ',' + names_of_parameters[1])
@@ -807,30 +817,30 @@ if plot2d=='y':
 if plot2d=='y' and plot3d=='y':
     try:
         for parnum in range(3):
-            parameters_on_axes3[parnum]=eval(parameters_on_axes3[parnum])
+            parameters_on_axes3[parnum] = eval(parameters_on_axes3[parnum])
     except:
         print('The variable párameters_on_axes3 is not well defined.')
         exit()
     
-    interval3=[]
-    counter=0
-    auxpar=parameters_on_axes.copy()
+    interval3 = []
+    counter = 0
+    auxpar = parameters_on_axes.copy()
     for parnum in range(2):
-        auxpar[parnum]=eval(auxpar[parnum])
+        auxpar[parnum] = eval(auxpar[parnum])
     for parnum in range(3):
         if counter>1:
             print('The variable parameter_on_axes3 is not well defined.')
             exit()
         elif parameters_on_axes3[parnum] in auxpar:
-            ind=auxpar.index(parameters_on_axes3[parnum])
+            ind = auxpar.index(parameters_on_axes3[parnum])
             if ind==0:
                 interval3.append(intervalx)
             elif ind==1:
                 interval3.append(intervaly)
         else:
             interval3.append(extrainterval)
-            extraparnum=parnum
-            counter+=1
+            extraparnum = parnum
+            counter+= 1
     
     try:
         file=open('Extra Turing curves in codimension-two bifurcation diagram.txt','w')
@@ -843,7 +853,7 @@ if plot2d=='y' and plot3d=='y':
     try:
         if len(name_of_extra_parameter)==0:
             name_of_extra_parameter=latex(parameters_on_axes3[extraparnum])
-        counter=0
+        counter = 0
         names_of_parameters3=[]
         for parnum in range(3):
             if parnum!=extraparnum:
@@ -852,9 +862,9 @@ if plot2d=='y' and plot3d=='y':
             else:
                 names_of_parameters3.append(name_of_extra_parameter)
     except:
-        name_of_extra_parameter=latex(parameters_on_axes3[extraparnum])
-        counter=0
-        names_of_parameters3=[]
+        name_of_extra_parameter = latex(parameters_on_axes3[extraparnum])
+        counter = 0
+        names_of_parameters3 = []
         for parnum in range(3):
             if parnum!=extraparnum:
                 names_of_parameters3.append(names_of_parameters[counter])
@@ -862,11 +872,11 @@ if plot2d=='y' and plot3d=='y':
             else:
                 names_of_parameters3.append(name_of_extra_parameter)
     
-    file=open('Codimension-two actual names of parameters.txt','w')
+    file = open('Codimension-two actual names of parameters.txt','w')
     file.write(names_of_parameters3[0] + ',' + names_of_parameters3[1] + ',' + names_of_parameters3[2])
     file.close()
     
-    file=open('Codimension-two parameters on axes.txt','w')
+    file = open('Codimension-two parameters on axes.txt','w')
     file.write(latex(parameters_on_axes3[0]) + ',' + latex(interval3[0][0]) + ',' + latex(interval3[0][1]) + '\n')
     file.write(latex(parameters_on_axes3[1]) + ',' + latex(interval3[1][0]) + ',' + latex(interval3[1][1]) + '\n')
     file.write(latex(parameters_on_axes3[2]) + ',' + latex(interval3[2][0]) + ',' + latex(interval3[2][1]) + '\n')

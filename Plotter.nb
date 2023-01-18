@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[    261323,       5786]
-NotebookOptionsPosition[    257251,       5712]
-NotebookOutlinePosition[    257779,       5731]
-CellTagsIndexPosition[    257736,       5728]
+NotebookDataLength[    265959,       5899]
+NotebookOptionsPosition[    261885,       5825]
+NotebookOutlinePosition[    262415,       5844]
+CellTagsIndexPosition[    262372,       5841]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -539,6 +539,35 @@ found. Run the Python script first.\>\"", "}"}], "]"}], ",",
   ";"}], "\[IndentingNewLine]", 
  RowBox[{"If", "[", 
   RowBox[{
+   RowBox[{"FileExistsQ", "[", "\"\<Non-zero variable.txt\>\"", "]"}], ",", 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"nonzero", "=", 
+     RowBox[{"Import", "[", "\"\<Non-zero variable.txt\>\"", "]"}]}], ";"}], 
+   "\[IndentingNewLine]", ",", "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"aux", "=", 
+     RowBox[{"CreateDocument", "[", "]"}]}], ";", "\[IndentingNewLine]", 
+    RowBox[{"SelectionMove", "[", 
+     RowBox[{"aux", ",", "Next", ",", "Cell"}], "]"}], ";", 
+    "\[IndentingNewLine]", 
+    RowBox[{"NotebookWrite", "[", 
+     RowBox[{"aux", ",", 
+      RowBox[{"Cell", "[", 
+       RowBox[{
+        RowBox[{"Row", "[", 
+         RowBox[{
+         "{", "\"\<The file 'Non-zero variable.txt' was not found. Run the \
+Python script first.\>\"", "}"}], "]"}], ",", "\"\<Output\>\""}], "]"}]}], 
+     "]"}], ";", "\[IndentingNewLine]", 
+    RowBox[{"Quit", "[", "]"}], ";"}]}], "\[IndentingNewLine]", 
+  "]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"nonzero", "=", 
+   RowBox[{"FormattingStrings", "[", "nonzero", "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{"If", "[", 
+  RowBox[{
    RowBox[{"FileExistsQ", "[", "\"\<Fixed parameter values.txt\>\"", "]"}], 
    ",", "\[IndentingNewLine]", 
    RowBox[{
@@ -630,8 +659,10 @@ the Python script first.\>\"", "}"}], "]"}], ",", "\"\<Output\>\""}], "]"}]}],
    3.846295590893399*^9}, {3.8462958113492365`*^9, 3.846295833618307*^9}, {
    3.855171380108647*^9, 3.855171400281336*^9}, {3.8678412794789224`*^9, 
    3.8678412801621084`*^9}, {3.8684613766452904`*^9, 
-   3.8684613828514977`*^9}, {3.869667120241046*^9, 3.8696672237890244`*^9}},
- CellLabel->"In[14]:=",ExpressionUUID->"47b09d0b-e895-4096-b07a-c4c7a19e5112"]
+   3.8684613828514977`*^9}, {3.869667120241046*^9, 3.8696672237890244`*^9}, {
+   3.8830580565125084`*^9, 
+   3.883058105437085*^9}},ExpressionUUID->"47b09d0b-e895-4096-b07a-\
+c4c7a19e5112"]
 }, Closed]],
 
 Cell[CellGroupData[{
@@ -1369,68 +1400,45 @@ not found. Run the Python script first.\>\"", "}"}], "]"}], ",",
        "\[IndentingNewLine]", 
        RowBox[{"If", "[", 
         RowBox[{
-         RowBox[{"If", "[", 
+         RowBox[{"Activate", "[", 
           RowBox[{
            RowBox[{
-            RowBox[{"Length", "[", "eq", "]"}], "==", "1"}], ",", 
-           "\[IndentingNewLine]", 
-           RowBox[{"Activate", "[", 
-            RowBox[{
-             RowBox[{"Inactivate", "[", 
+            RowBox[{"Inactivate", "[", 
+             RowBox[{
               RowBox[{
-               RowBox[{
-                RowBox[{"Chop", "[", 
-                 RowBox[{"muNF", ",", "Choptol"}], "]"}], "!=", "0"}], " ", "&&",
-                "\[IndentingNewLine]", 
-               RowBox[{
-                RowBox[{"Max", "[", 
-                 RowBox[{"Abs", "[", 
-                  RowBox[{"Join", "[", 
-                   RowBox[{
-                    RowBox[{"{", 
-                    RowBox[{"zerodet", ",", "zeroder"}], "}"}], ",", 
-                    "kinetics"}], "]"}], "]"}], "]"}], "<", "tol"}], " ", "&&",
-                " ", 
-               RowBox[{
-                RowBox[{"lowerbound", "[", 
-                 RowBox[{"[", "anotherparameter", "]"}], "]"}], "<=", 
-                RowBox[{"par", "[", 
-                 RowBox[{"[", "anotherparameter", "]"}], "]"}], "<=", 
-                RowBox[{"upperbound", "[", 
-                 RowBox[{"[", "anotherparameter", "]"}], "]"}]}]}], "]"}], "/.", 
-             RowBox[{"initialvalues", "[", 
-              RowBox[{"[", "initialsolnum", "]"}], "]"}]}], "]"}], ",", 
-           "\[IndentingNewLine]", 
-           RowBox[{"Activate", "[", 
-            RowBox[{
-             RowBox[{"Inactivate", "[", 
+               RowBox[{"Chop", "[", 
+                RowBox[{"muNF", ",", "Choptol"}], "]"}], "!=", "0"}], " ", "&&",
+               "\[IndentingNewLine]", 
               RowBox[{
+               RowBox[{"Max", "[", 
+                RowBox[{"Abs", "[", 
+                 RowBox[{"{", 
+                  RowBox[{"zerodet", ",", "zeroder"}], "}"}], "]"}], "]"}], 
+               "<", "tol"}], " ", "&&", " ", 
+              RowBox[{"If", "[", 
                RowBox[{
-                RowBox[{"Chop", "[", 
-                 RowBox[{"muNF", ",", "Choptol"}], "]"}], "!=", "0"}], " ", "&&",
-                "\[IndentingNewLine]", 
-               RowBox[{
-                RowBox[{"Max", "[", 
-                 RowBox[{"Abs", "[", 
-                  RowBox[{"{", 
-                   RowBox[{"zerodet", ",", "zeroder"}], "}"}], "]"}], "]"}], 
-                "<", "tol"}], " ", "&&", " ", 
-               RowBox[{
-                RowBox[{"Norm", "[", 
-                 RowBox[{
-                  RowBox[{"(", 
-                   RowBox[{"var", "/.", "eq"}], ")"}], "-", "var"}], "]"}], 
-                "<", "tol"}], " ", "&&", " ", 
-               RowBox[{
-                RowBox[{"lowerbound", "[", 
-                 RowBox[{"[", "anotherparameter", "]"}], "]"}], "<=", 
-                RowBox[{"par", "[", 
-                 RowBox[{"[", "anotherparameter", "]"}], "]"}], "<=", 
-                RowBox[{"upperbound", "[", 
-                 RowBox[{"[", "anotherparameter", "]"}], "]"}]}]}], "]"}], "/.", 
-             RowBox[{"initialvalues", "[", 
-              RowBox[{"[", "initialsolnum", "]"}], "]"}]}], "]"}]}], "]"}], 
-         ",", "\[IndentingNewLine]", 
+                RowBox[{
+                 RowBox[{"Length", "[", "eq", "]"}], ">", "1"}], ",", 
+                RowBox[{
+                 RowBox[{"Norm", "[", 
+                  RowBox[{
+                   RowBox[{"(", 
+                    RowBox[{"var", "/.", "eq"}], ")"}], "-", "var"}], "]"}], 
+                 "<", "tol"}], ",", "True"}], "]"}], " ", "&&", " ", 
+              RowBox[{
+               RowBox[{"lowerbound", "[", 
+                RowBox[{"[", "anotherparameter", "]"}], "]"}], "<=", 
+               RowBox[{"par", "[", 
+                RowBox[{"[", "anotherparameter", "]"}], "]"}], "<=", 
+               RowBox[{"upperbound", "[", 
+                RowBox[{"[", "anotherparameter", "]"}], "]"}]}]}], "]"}], " ",
+             "&&", " ", 
+            RowBox[{
+             RowBox[{"Chop", "[", 
+              RowBox[{"nonzero", ",", "Choptol"}], "]"}], "!=", "0"}]}], "/.", 
+           RowBox[{"initialvalues", "[", 
+            RowBox[{"[", "initialsolnum", "]"}], "]"}]}], "]"}], ",", 
+         "\[IndentingNewLine]", 
          RowBox[{
           RowBox[{"dereval", "=", 
            RowBox[{"Table", "[", 
@@ -1600,24 +1608,16 @@ not found. Run the Python script first.\>\"", "}"}], "]"}], ",",
               RowBox[{"Quiet", "@", 
                RowBox[{"ParametricPlot", "[", 
                 RowBox[{
-                 RowBox[{"{", 
-                  RowBox[{"If", "[", 
+                 RowBox[{
+                  RowBox[{"{", 
                    RowBox[{
-                    RowBox[{
-                    RowBox[{"(", 
-                    RowBox[{
-                    RowBox[{"muNF", "[", "time", "]"}], "/.", "sol"}], ")"}], 
-                    "\[Element]", "Reals"}], ",", 
-                    RowBox[{
-                    RowBox[{"{", 
-                    RowBox[{
                     RowBox[{
                     RowBox[{"par", "[", 
                     RowBox[{"[", "1", "]"}], "]"}], "[", "time", "]"}], ",", 
                     RowBox[{
                     RowBox[{"par", "[", 
                     RowBox[{"[", "2", "]"}], "]"}], "[", "time", "]"}]}], 
-                    "}"}], "/.", " ", "sol"}]}], "]"}], "}"}], ",", 
+                   "}"}], "/.", " ", "sol"}], ",", 
                  RowBox[{"{", 
                   RowBox[{"time", ",", 
                    RowBox[{
@@ -1775,56 +1775,35 @@ not found. Run the Python script first.\>\"", "}"}], "]"}], ",",
        "\[IndentingNewLine]", 
        RowBox[{"If", "[", 
         RowBox[{
-         RowBox[{"If", "[", 
+         RowBox[{"Activate", "[", 
           RowBox[{
-           RowBox[{
-            RowBox[{"Length", "[", "eq", "]"}], "==", "1"}], ",", 
-           RowBox[{"Activate", "[", 
+           RowBox[{"Inactivate", "[", 
             RowBox[{
-             RowBox[{"Inactivate", "[", 
+             RowBox[{
+              RowBox[{"Abs", "[", 
+               RowBox[{"zerodet", "/.", 
+                RowBox[{"muNF", "->", "0"}]}], "]"}], "<", "tol"}], " ", "&&",
+              " ", 
+             RowBox[{"If", "[", 
               RowBox[{
                RowBox[{
-                RowBox[{"Max", "[", 
-                 RowBox[{"Abs", "[", 
-                  RowBox[{"Append", "[", 
-                   RowBox[{"kinetics", ",", 
-                    RowBox[{"zerodet", "/.", 
-                    RowBox[{"muNF", "->", "0"}]}]}], "]"}], "]"}], "]"}], "<",
-                 "tol"}], " ", "&&", " ", 
-               RowBox[{
-                RowBox[{"lowerbound", "[", 
-                 RowBox[{"[", "anotherparameter", "]"}], "]"}], "<=", 
-                RowBox[{"par", "[", 
-                 RowBox[{"[", "anotherparameter", "]"}], "]"}], "<=", 
-                RowBox[{"upperbound", "[", 
-                 RowBox[{"[", "anotherparameter", "]"}], "]"}]}]}], "]"}], "/.", 
-             RowBox[{"initialvaluesGlobalLP", "[", 
-              RowBox[{"[", "initialsolnum", "]"}], "]"}]}], "]"}], ",", 
-           RowBox[{"Activate", "[", 
-            RowBox[{
-             RowBox[{"Inactivate", "[", 
-              RowBox[{
-               RowBox[{
-                RowBox[{"Abs", "[", 
-                 RowBox[{"zerodet", "/.", 
-                  RowBox[{"muNF", "->", "0"}]}], "]"}], "<", "tol"}], " ", "&&",
-                " ", 
+                RowBox[{"Length", "[", "eq", "]"}], ">", "1"}], ",", 
                RowBox[{
                 RowBox[{"Norm", "[", 
                  RowBox[{
                   RowBox[{"(", 
                    RowBox[{"var", "/.", "eq"}], ")"}], "-", "var"}], "]"}], 
-                "<", "tol"}], " ", "&&", " ", 
-               RowBox[{
-                RowBox[{"lowerbound", "[", 
-                 RowBox[{"[", "anotherparameter", "]"}], "]"}], "<=", 
-                RowBox[{"par", "[", 
-                 RowBox[{"[", "anotherparameter", "]"}], "]"}], "<=", 
-                RowBox[{"upperbound", "[", 
-                 RowBox[{"[", "anotherparameter", "]"}], "]"}]}]}], "]"}], "/.", 
-             RowBox[{"initialvaluesGlobalLP", "[", 
-              RowBox[{"[", "initialsolnum", "]"}], "]"}]}], "]"}]}], "]"}], 
-         ",", "\[IndentingNewLine]", 
+                "<", "tol"}], ",", "True"}], "]"}], " ", "&&", " ", 
+             RowBox[{
+              RowBox[{"lowerbound", "[", 
+               RowBox[{"[", "anotherparameter", "]"}], "]"}], "<=", 
+              RowBox[{"par", "[", 
+               RowBox[{"[", "anotherparameter", "]"}], "]"}], "<=", 
+              RowBox[{"upperbound", "[", 
+               RowBox[{"[", "anotherparameter", "]"}], "]"}]}]}], "]"}], "/.", 
+           RowBox[{"initialvaluesGlobalLP", "[", 
+            RowBox[{"[", "initialsolnum", "]"}], "]"}]}], "]"}], ",", 
+         "\[IndentingNewLine]", 
          RowBox[{
           RowBox[{"dereval", "=", 
            RowBox[{"Table", "[", 
@@ -2372,8 +2351,11 @@ search.\>\"", "}"}], "]"}], ",", "\"\<Output\>\""}], "]"}]}], "]"}]}]}],
    3.869669330089698*^9}, {3.8696694817486773`*^9, 3.8696694869718776`*^9}, {
    3.869669548824684*^9, 3.8696695492271156`*^9}, {3.869669960473612*^9, 
    3.8696700413837214`*^9}, {3.869670257003083*^9, 3.8696702646153817`*^9}, {
-   3.869677189056265*^9, 3.869677189405475*^9}, 
-   3.871411499972601*^9},ExpressionUUID->"9919ef6e-2978-4802-bd05-\
+   3.869677189056265*^9, 3.869677189405475*^9}, 3.871411499972601*^9, {
+   3.883058164000578*^9, 3.883058176103432*^9}, {3.883058220270136*^9, 
+   3.883058260132867*^9}, {3.8830584068753357`*^9, 3.8830584977141085`*^9}, {
+   3.883063136317121*^9, 
+   3.8830631515431805`*^9}},ExpressionUUID->"9919ef6e-2978-4802-bd05-\
 8061f7920bda"]
 }, Closed]],
 
@@ -2610,7 +2592,21 @@ system\>\"", "]"}], ";"}], "\[IndentingNewLine]", ",", "\[IndentingNewLine]",
                     RowBox[{"[", "2", "]"}], "]"}], "[", "\"\<Domain\>\"", 
                     "]"}], "[", 
                     RowBox[{"[", "1", "]"}], "]"}], "[", 
-                    RowBox[{"[", "1", "]"}], "]"}]}]}], ",", 
+                    RowBox[{"[", "1", "]"}], "]"}]}], " ", "&&", " ", 
+                  RowBox[{
+                   RowBox[{"Chop", "[", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"muNF", "[", 
+                    RowBox[{
+                    RowBox[{"allvals", "[", 
+                    RowBox[{"[", "valnum", "]"}], "]"}], "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], "]"}], "/.", 
+                    RowBox[{
+                    RowBox[{"solutioncurves", "[", 
+                    RowBox[{"[", "outersolnum", "]"}], "]"}], "[", 
+                    RowBox[{"[", "innersolnum", "]"}], "]"}]}], ",", 
+                    "Choptol"}], "]"}], "!=", "0"}]}], ",", 
                  "\[IndentingNewLine]", 
                  RowBox[{"AppendTo", "[", 
                   RowBox[{"vals", ",", 
@@ -3160,8 +3156,10 @@ points.txt\>\"", ",", "fifthcoeff"}], "]"}], ";"}], "\[IndentingNewLine]",
    3.868712723216051*^9, 3.8687127279843864`*^9}, {3.8687128146460805`*^9, 
    3.8687128536973495`*^9}, {3.868712922165224*^9, 3.8687129267473097`*^9}, {
    3.868712973908067*^9, 3.8687129887645955`*^9}, {3.868713040228586*^9, 
-   3.8687130519301825`*^9}, {3.869676931667527*^9, 3.8696770433158236`*^9}},
- CellLabel->"In[66]:=",ExpressionUUID->"fb8b154a-015f-45ba-964e-1aa654390a6e"]
+   3.8687130519301825`*^9}, {3.869676931667527*^9, 3.8696770433158236`*^9}, {
+   3.883058906947466*^9, 
+   3.883058914366321*^9}},ExpressionUUID->"fb8b154a-015f-45ba-964e-\
+1aa654390a6e"]
 }, Closed]],
 
 Cell[CellGroupData[{
@@ -3271,6 +3269,41 @@ system\>\"", "]"}], ";"}], "\[IndentingNewLine]", ",", "\[IndentingNewLine]",
             RowBox[{"[", "outersolnum", "]"}], "]"}], "]"}]}], ",", 
          RowBox[{"innersolnum", "++"}], ",", "\[IndentingNewLine]", 
          RowBox[{
+          RowBox[{"auxnonzero", "=", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"Compile", "[", 
+              RowBox[{
+               RowBox[{"{", "time", "}"}], ",", "#", ",", 
+               RowBox[{"RuntimeOptions", "->", 
+                RowBox[{"\"\<EvaluateSymbolically\>\"", "->", "False"}]}]}], 
+              "]"}], "&"}], "@", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{
+               RowBox[{
+                RowBox[{
+                 RowBox[{"nonzero", "/.", 
+                  RowBox[{
+                   RowBox[{"par", "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], "->", 
+                   RowBox[{
+                    RowBox[{"par", "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], "[", "time", "]"}]}]}], "/.", 
+                 RowBox[{
+                  RowBox[{"par", "[", 
+                   RowBox[{"[", "2", "]"}], "]"}], "->", 
+                  RowBox[{
+                   RowBox[{"par", "[", 
+                    RowBox[{"[", "2", "]"}], "]"}], "[", "time", "]"}]}]}], "/.", 
+                RowBox[{"muNF", "->", 
+                 RowBox[{"muNF", "[", "time", "]"}]}]}], "/.", 
+               "variabledependence"}], "/.", 
+              RowBox[{
+               RowBox[{"solutioncurves", "[", 
+                RowBox[{"[", "outersolnum", "]"}], "]"}], "[", 
+               RowBox[{"[", "innersolnum", "]"}], "]"}]}], ")"}]}]}], ";", 
+          "\[IndentingNewLine]", 
           RowBox[{"auxC3", "=", 
            RowBox[{
             RowBox[{
@@ -3317,8 +3350,10 @@ system\>\"", "]"}], ";"}], "\[IndentingNewLine]", ",", "\[IndentingNewLine]",
                   RowBox[{
                    RowBox[{
                     RowBox[{
-                    RowBox[{"muNF", "[", "time", "]"}], "\[Element]", 
-                    "Reals"}], " ", "&&", " ", 
+                    RowBox[{"Chop", "[", 
+                    RowBox[{
+                    RowBox[{"auxnonzero", "[", "time", "]"}], ",", 
+                    "Choptol"}], "]"}], "!=", "0"}], " ", "&&", " ", 
                     RowBox[{
                     RowBox[{"muNF", "[", "time", "]"}], ">", "0"}], " ", "&&",
                      " ", 
@@ -3350,8 +3385,10 @@ system\>\"", "]"}], ";"}], "\[IndentingNewLine]", ",", "\[IndentingNewLine]",
                   RowBox[{
                    RowBox[{
                     RowBox[{
-                    RowBox[{"muNF", "[", "time", "]"}], "\[Element]", 
-                    "Reals"}], " ", "&&", " ", 
+                    RowBox[{"Chop", "[", 
+                    RowBox[{
+                    RowBox[{"auxnonzero", "[", "time", "]"}], ",", 
+                    "Choptol"}], "]"}], "!=", "0"}], " ", "&&", " ", 
                     RowBox[{
                     RowBox[{"muNF", "[", "time", "]"}], ">", "0"}], " ", "&&",
                      " ", 
@@ -3383,8 +3420,10 @@ system\>\"", "]"}], ";"}], "\[IndentingNewLine]", ",", "\[IndentingNewLine]",
                   RowBox[{
                    RowBox[{
                     RowBox[{
-                    RowBox[{"muNF", "[", "time", "]"}], "\[Element]", 
-                    "Reals"}], " ", "&&", " ", 
+                    RowBox[{"Chop", "[", 
+                    RowBox[{
+                    RowBox[{"auxnonzero", "[", "time", "]"}], ",", 
+                    "Choptol"}], "]"}], "!=", "0"}], " ", "&&", " ", 
                     RowBox[{
                     RowBox[{"muNF", "[", "time", "]"}], "<", "0"}]}], "/.", 
                    RowBox[{
@@ -3754,7 +3793,9 @@ system\>\"", "]"}], ";"}], "\[IndentingNewLine]", ",", "\[IndentingNewLine]",
    3.8695954796694784`*^9, 3.8695954843400555`*^9}, {3.869677051569944*^9, 
    3.8696770692911296`*^9}, {3.8726947393671465`*^9, 
    3.8726947430962095`*^9}, {3.8738951894327345`*^9, 
-   3.8738951903791804`*^9}},ExpressionUUID->"7f0bdfc8-c8b7-4f06-9635-\
+   3.8738951903791804`*^9}, {3.883058603729489*^9, 3.8830586116116323`*^9}, {
+   3.8830586436769094`*^9, 3.8830586947199016`*^9}, {3.8830593046244254`*^9, 
+   3.883059304941242*^9}},ExpressionUUID->"7f0bdfc8-c8b7-4f06-9635-\
 3f6fa686187c"]
 }, Closed]],
 
@@ -4597,8 +4638,8 @@ diagram.txt\>\"", "]"}]}], ";", "\[IndentingNewLine]",
      "\[IndentingNewLine]", "]"}], ";", "\[IndentingNewLine]", 
     RowBox[{
     "Close", "[", 
-     "\"\<Extra Turing curves in codimension-two bifuration diagram.txt\>\"", 
-     "]"}], ";", "\[IndentingNewLine]", 
+     "\"\<Extra Turing curves in codimension-two bifurcation diagram.txt\>\"",
+      "]"}], ";", "\[IndentingNewLine]", 
     RowBox[{"For", "[", 
      RowBox[{
       RowBox[{"turingnumber", "=", "1"}], ",", 
@@ -5035,26 +5076,17 @@ diagram.txt\>\"", "]"}]}], ";", "\[IndentingNewLine]",
            RowBox[{"Quiet", "@", 
             RowBox[{"ParametricPlot", "[", 
              RowBox[{
-              RowBox[{"{", 
-               RowBox[{"If", "[", 
+              RowBox[{
+               RowBox[{"{", 
                 RowBox[{
                  RowBox[{
-                  RowBox[{"(", 
-                   RowBox[{
-                    RowBox[{"muNF", "[", "time", "]"}], "/.", "sol"}], ")"}], 
-                  "\[Element]", "Reals"}], ",", 
+                  RowBox[{"par", "[", 
+                   RowBox[{"[", "anotherparameter1", "]"}], "]"}], "[", 
+                  "time", "]"}], ",", 
                  RowBox[{
-                  RowBox[{"{", 
-                   RowBox[{
-                    RowBox[{
-                    RowBox[{"par", "[", 
-                    RowBox[{"[", "anotherparameter1", "]"}], "]"}], "[", 
-                    "time", "]"}], ",", 
-                    RowBox[{
-                    RowBox[{"par", "[", 
-                    RowBox[{"[", "anotherparameter2", "]"}], "]"}], "[", 
-                    "time", "]"}]}], "}"}], "/.", " ", "sol"}]}], "]"}], 
-               "}"}], ",", 
+                  RowBox[{"par", "[", 
+                   RowBox[{"[", "anotherparameter2", "]"}], "]"}], "[", 
+                  "time", "]"}]}], "}"}], "/.", " ", "sol"}], ",", 
               RowBox[{"{", 
                RowBox[{"time", ",", 
                 RowBox[{
@@ -5122,8 +5154,9 @@ diagram.txt\>\"", "]"}]}], ";", "\[IndentingNewLine]",
    3.8685349501163187`*^9}, {3.8694247997141914`*^9, 
    3.8694248135997396`*^9}, {3.8694250642137456`*^9, 
    3.8694250880153723`*^9}, {3.8694358455499463`*^9, 3.86943588424797*^9}, {
-   3.8739109379794726`*^9, 
-   3.873910957133812*^9}},ExpressionUUID->"b5767154-72ac-4193-ae3b-\
+   3.8739109379794726`*^9, 3.873910957133812*^9}, 3.883063083196973*^9, {
+   3.8830631916679516`*^9, 
+   3.883063207527285*^9}},ExpressionUUID->"b5767154-72ac-4193-ae3b-\
 769f8643c433"]
 }, Closed]],
 
@@ -5196,6 +5229,41 @@ Cell[BoxData[
            RowBox[{"[", "outersolnum", "]"}], "]"}], "]"}]}], ",", 
         RowBox[{"innersolnum", "++"}], ",", "\[IndentingNewLine]", 
         RowBox[{
+         RowBox[{"auxnonzero", "=", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"Compile", "[", 
+             RowBox[{
+              RowBox[{"{", "time", "}"}], ",", "#", ",", 
+              RowBox[{"RuntimeOptions", "->", 
+               RowBox[{"\"\<EvaluateSymbolically\>\"", "->", "False"}]}]}], 
+             "]"}], "&"}], "@", " ", 
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{
+              RowBox[{
+               RowBox[{
+                RowBox[{"nonzero", "/.", 
+                 RowBox[{
+                  RowBox[{"par", "[", 
+                   RowBox[{"[", "1", "]"}], "]"}], "->", 
+                  RowBox[{
+                   RowBox[{"par", "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], "[", "time", "]"}]}]}], "/.", 
+                RowBox[{
+                 RowBox[{"par", "[", 
+                  RowBox[{"[", "2", "]"}], "]"}], "->", 
+                 RowBox[{
+                  RowBox[{"par", "[", 
+                   RowBox[{"[", "2", "]"}], "]"}], "[", "time", "]"}]}]}], "/.", 
+               RowBox[{"muNF", "->", 
+                RowBox[{"muNF", "[", "time", "]"}]}]}], "/.", 
+              "variabledependence"}], "/.", 
+             RowBox[{
+              RowBox[{"turingbifurcationcurves", "[", 
+               RowBox[{"[", "outersolnum", "]"}], "]"}], "[", 
+              RowBox[{"[", "innersolnum", "]"}], "]"}]}], ")"}]}]}], ";", 
+         "\[IndentingNewLine]", 
          RowBox[{"auxC3", "=", 
           RowBox[{
            RowBox[{
@@ -5241,8 +5309,10 @@ Cell[BoxData[
                 RowBox[{
                  RowBox[{
                   RowBox[{
-                   RowBox[{"muNF", "[", "time", "]"}], "\[Element]", 
-                   "Reals"}], " ", "&&", " ", 
+                   RowBox[{"Chop", "[", 
+                    RowBox[{
+                    RowBox[{"auxnonzero", "[", "time", "]"}], ",", 
+                    "Choptol"}], "]"}], "!=", "0"}], " ", "&&", " ", 
                   RowBox[{
                    RowBox[{"muNF", "[", "time", "]"}], ">", "0"}], " ", "&&", 
                   " ", 
@@ -5299,8 +5369,8 @@ Cell[BoxData[
                     RowBox[{"[", "outersolnum", "]"}], "]"}], "[", 
                     RowBox[{"[", "innersolnum", "]"}], "]"}], "[", 
                     RowBox[{"[", "1", "]"}], "]"}], "[", 
-                   RowBox[{"[", "2", "]"}], "]"}], "[", "\"\<Domain\>\"", 
-                  "]"}], "[", 
+                   RowBox[{"[", "2", "]"}], "]"}], "[", "\"\<Domain\>\"", "]"}
+                  ], "[", 
                  RowBox[{"[", "1", "]"}], "]"}], "[", 
                 RowBox[{"[", "2", "]"}], "]"}]}], "}"}], ",", 
              RowBox[{"PlotStyle", "\[Rule]", "Red"}], ",", 
@@ -5339,8 +5409,10 @@ Cell[BoxData[
                 RowBox[{
                  RowBox[{
                   RowBox[{
-                   RowBox[{"muNF", "[", "time", "]"}], "\[Element]", 
-                   "Reals"}], " ", "&&", " ", 
+                   RowBox[{"Chop", "[", 
+                    RowBox[{
+                    RowBox[{"auxnonzero", "[", "time", "]"}], ",", 
+                    "Choptol"}], "]"}], "!=", "0"}], " ", "&&", " ", 
                   RowBox[{
                    RowBox[{"muNF", "[", "time", "]"}], ">", "0"}], " ", "&&", 
                   " ", 
@@ -5437,8 +5509,10 @@ Cell[BoxData[
                 RowBox[{
                  RowBox[{
                   RowBox[{
-                   RowBox[{"muNF", "[", "time", "]"}], "\[Element]", 
-                   "Reals"}], " ", "&&", " ", 
+                   RowBox[{"Chop", "[", 
+                    RowBox[{
+                    RowBox[{"auxnonzero", "[", "time", "]"}], ",", 
+                    "Choptol"}], "]"}], "!=", "0"}], " ", "&&", " ", 
                   RowBox[{
                    RowBox[{"muNF", "[", "time", "]"}], "<", "0"}]}], " ", "/.", 
                  RowBox[{
@@ -5537,6 +5611,41 @@ Cell[BoxData[
            RowBox[{"[", "outersolnum", "]"}], "]"}], "]"}]}], ",", 
         RowBox[{"innersolnum", "++"}], ",", "\[IndentingNewLine]", 
         RowBox[{
+         RowBox[{"auxnonzero", "=", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"Compile", "[", 
+             RowBox[{
+              RowBox[{"{", "time", "}"}], ",", "#", ",", 
+              RowBox[{"RuntimeOptions", "->", 
+               RowBox[{"\"\<EvaluateSymbolically\>\"", "->", "False"}]}]}], 
+             "]"}], "&"}], "@", " ", 
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{
+              RowBox[{
+               RowBox[{
+                RowBox[{"nonzero", "/.", 
+                 RowBox[{
+                  RowBox[{"par", "[", 
+                   RowBox[{"[", "1", "]"}], "]"}], "->", 
+                  RowBox[{
+                   RowBox[{"par", "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], "[", "time", "]"}]}]}], "/.", 
+                RowBox[{
+                 RowBox[{"par", "[", 
+                  RowBox[{"[", "2", "]"}], "]"}], "->", 
+                 RowBox[{
+                  RowBox[{"par", "[", 
+                   RowBox[{"[", "2", "]"}], "]"}], "[", "time", "]"}]}]}], "/.", 
+               RowBox[{"muNF", "->", 
+                RowBox[{"muNF", "[", "time", "]"}]}]}], "/.", 
+              "variabledependence"}], "/.", 
+             RowBox[{
+              RowBox[{"solutioncurves", "[", 
+               RowBox[{"[", "outersolnum", "]"}], "]"}], "[", 
+              RowBox[{"[", "innersolnum", "]"}], "]"}]}], ")"}]}]}], ";", 
+         "\[IndentingNewLine]", 
          RowBox[{"tempplot", "=", 
           RowBox[{"Quiet", "@", 
            RowBox[{"ParametricPlot3D", "[", 
@@ -5547,8 +5656,10 @@ Cell[BoxData[
                 RowBox[{
                  RowBox[{
                   RowBox[{
-                   RowBox[{"muNF", "[", "time", "]"}], "\[Element]", 
-                   "Reals"}], " ", "&&", " ", 
+                   RowBox[{"Chop", "[", 
+                    RowBox[{
+                    RowBox[{"auxnonzero", "[", "time", "]"}], ",", 
+                    "Choptol"}], "]"}], "!=", "0"}], " ", "&&", " ", 
                   RowBox[{
                    RowBox[{"muNF", "[", "time", "]"}], ">", "0"}]}], "/.", 
                  RowBox[{
@@ -5694,7 +5805,9 @@ Cell[BoxData[
   3.8695954292304344`*^9, 3.8695954502663226`*^9}, {3.8695954960748777`*^9, 
   3.869595546664442*^9}, {3.8726947186489573`*^9, 3.872694724987417*^9}, {
   3.8738952037667913`*^9, 3.8738952066449604`*^9}, {3.87391097292367*^9, 
-  3.8739110150345964`*^9}},ExpressionUUID->"12e3224d-85ea-4077-a7a5-\
+  3.8739110150345964`*^9}, {3.883058720883506*^9, 3.8830588013809566`*^9}, {
+  3.8830645274201555`*^9, 
+  3.8830645562999554`*^9}},ExpressionUUID->"12e3224d-85ea-4077-a7a5-\
 67b3f4f96a04"],
 
 Cell[BoxData["\<\"The files needed to plot the codimension-two curves were \
@@ -5715,7 +5828,7 @@ WindowMargins->{{-6, Automatic}, {Automatic, 0}},
 TaggingRules->{
  "WelcomeScreenSettings" -> {"FEStarting" -> False}, "TryRealOnly" -> False},
 Magnification:>1.4 Inherited,
-FrontEndVersion->"13.1 for Microsoft Windows (64-bit) (August 22, 2022)",
+FrontEndVersion->"13.2 for Microsoft Windows (64-bit) (November 18, 2022)",
 StyleDefinitions->"Default.nb",
 ExpressionUUID->"fedd186e-0433-4b8f-bc48-17a0a3d40abe"
 ]
@@ -5743,49 +5856,49 @@ Cell[8992, 217, 8513, 210, 1506, "Input",ExpressionUUID->"e355d9ee-cf66-4ea3-b37
 Cell[CellGroupData[{
 Cell[17542, 432, 245, 4, 98, "Title",ExpressionUUID->"6b1368fc-8535-487b-a757-1df89674a1ae"],
 Cell[17790, 438, 313, 7, 79, "Text",ExpressionUUID->"7f370b43-db6a-4899-9799-13d0f3292753"],
-Cell[18106, 447, 8382, 186, 1319, "Input",ExpressionUUID->"47b09d0b-e895-4096-b07a-c4c7a19e5112"]
+Cell[18106, 447, 9533, 217, 1558, "Input",ExpressionUUID->"47b09d0b-e895-4096-b07a-c4c7a19e5112"]
 }, Closed]],
 Cell[CellGroupData[{
-Cell[26525, 638, 244, 4, 98, "Title",ExpressionUUID->"a4bdec2e-f6d4-4657-b8b4-76183b2ecf81"],
-Cell[26772, 644, 297, 6, 48, "Text",ExpressionUUID->"b5477da1-e976-4ef3-9e69-45d9f3b72aeb"],
-Cell[27072, 652, 5464, 127, 786, "Input",ExpressionUUID->"47f29af5-90a6-416b-851b-bc0d861fff99"]
+Cell[27676, 669, 244, 4, 98, "Title",ExpressionUUID->"a4bdec2e-f6d4-4657-b8b4-76183b2ecf81"],
+Cell[27923, 675, 297, 6, 48, "Text",ExpressionUUID->"b5477da1-e976-4ef3-9e69-45d9f3b72aeb"],
+Cell[28223, 683, 5464, 127, 786, "Input",ExpressionUUID->"47f29af5-90a6-416b-851b-bc0d861fff99"]
 }, Closed]],
 Cell[CellGroupData[{
-Cell[32573, 784, 214, 4, 98, "Title",ExpressionUUID->"ea7c5508-ed79-43b1-a153-1c2fd0b76f5b"],
-Cell[32790, 790, 1024, 16, 172, "Text",ExpressionUUID->"5fec1db2-68c6-4b57-89c4-f85a05da35a1"],
-Cell[33817, 808, 72547, 1568, 4360, "Input",ExpressionUUID->"9919ef6e-2978-4802-bd05-8061f7920bda"]
+Cell[33724, 815, 214, 4, 98, "Title",ExpressionUUID->"ea7c5508-ed79-43b1-a153-1c2fd0b76f5b"],
+Cell[33941, 821, 1024, 16, 172, "Text",ExpressionUUID->"5fec1db2-68c6-4b57-89c4-f85a05da35a1"],
+Cell[34968, 839, 70376, 1519, 4147, "Input",ExpressionUUID->"9919ef6e-2978-4802-bd05-8061f7920bda"]
 }, Closed]],
 Cell[CellGroupData[{
-Cell[106401, 2381, 260, 6, 183, "Title",ExpressionUUID->"741eb1d1-ecb6-4601-bec9-e01c0e2cd7d8"],
-Cell[106664, 2389, 1061, 26, 110, "Text",ExpressionUUID->"4471743e-7c28-41e1-9073-41bf3f51418a"],
-Cell[107728, 2417, 38663, 746, 2396, "Input",ExpressionUUID->"fb8b154a-015f-45ba-964e-1aa654390a6e"]
+Cell[105381, 2363, 260, 6, 183, "Title",ExpressionUUID->"741eb1d1-ecb6-4601-bec9-e01c0e2cd7d8"],
+Cell[105644, 2371, 1061, 26, 110, "Text",ExpressionUUID->"4471743e-7c28-41e1-9073-41bf3f51418a"],
+Cell[106708, 2399, 39355, 762, 2422, "Input",ExpressionUUID->"fb8b154a-015f-45ba-964e-1aa654390a6e"]
 }, Closed]],
 Cell[CellGroupData[{
-Cell[146428, 3168, 270, 4, 98, "Title",ExpressionUUID->"335983e1-ddfc-4628-a13f-400ae567ecbb"],
-Cell[146701, 3174, 1234, 31, 141, "Text",ExpressionUUID->"c3a28e72-11cc-4488-b25f-12fc8d97dce5"],
-Cell[147938, 3207, 27725, 550, 1372, "Input",ExpressionUUID->"7f0bdfc8-c8b7-4f06-9635-3f6fa686187c"]
+Cell[146100, 3166, 270, 4, 98, "Title",ExpressionUUID->"335983e1-ddfc-4628-a13f-400ae567ecbb"],
+Cell[146373, 3172, 1234, 31, 141, "Text",ExpressionUUID->"c3a28e72-11cc-4488-b25f-12fc8d97dce5"],
+Cell[147610, 3205, 29620, 593, 1452, "Input",ExpressionUUID->"7f0bdfc8-c8b7-4f06-9635-3f6fa686187c"]
 }, Closed]],
 Cell[CellGroupData[{
-Cell[175700, 3762, 221, 4, 183, "Title",ExpressionUUID->"22396d79-1554-4bd1-b57b-3637995f26e1"],
-Cell[175924, 3768, 210, 6, 48, "Text",ExpressionUUID->"1d798801-9506-4883-bd0a-503a8c94ea1e"],
-Cell[176137, 3776, 7854, 185, 1345, "Input",ExpressionUUID->"8e231fa1-823f-4b7e-9741-54fb6726aef5"]
+Cell[177267, 3803, 221, 4, 183, "Title",ExpressionUUID->"22396d79-1554-4bd1-b57b-3637995f26e1"],
+Cell[177491, 3809, 210, 6, 48, "Text",ExpressionUUID->"1d798801-9506-4883-bd0a-503a8c94ea1e"],
+Cell[177704, 3817, 7854, 185, 1345, "Input",ExpressionUUID->"8e231fa1-823f-4b7e-9741-54fb6726aef5"]
 }, Closed]],
 Cell[CellGroupData[{
-Cell[184028, 3966, 179, 3, 98, "Title",ExpressionUUID->"721b3d26-65f5-48dc-83bc-d60458e19cf1"],
-Cell[184210, 3971, 690, 15, 110, "Text",ExpressionUUID->"4e47a1b0-2e23-44ed-9899-bb6d3e49b736"],
-Cell[184903, 3988, 21575, 533, 2155, "Input",ExpressionUUID->"b8150510-4aa6-4710-af7d-a3857f48b73d"]
+Cell[185595, 4007, 179, 3, 98, "Title",ExpressionUUID->"721b3d26-65f5-48dc-83bc-d60458e19cf1"],
+Cell[185777, 4012, 690, 15, 110, "Text",ExpressionUUID->"4e47a1b0-2e23-44ed-9899-bb6d3e49b736"],
+Cell[186470, 4029, 21575, 533, 2155, "Input",ExpressionUUID->"b8150510-4aa6-4710-af7d-a3857f48b73d"]
 }, Closed]],
 Cell[CellGroupData[{
-Cell[206515, 4526, 178, 3, 98, "Title",ExpressionUUID->"93eb3777-1d8e-484c-a587-8a12b89e2186"],
-Cell[206696, 4531, 406, 8, 79, "Text",ExpressionUUID->"21bfde7a-2c5c-4a92-a9b1-7fda07677624"],
-Cell[207105, 4541, 24757, 585, 2409, "Input",ExpressionUUID->"b5767154-72ac-4193-ae3b-769f8643c433"]
+Cell[208082, 4567, 178, 3, 98, "Title",ExpressionUUID->"93eb3777-1d8e-484c-a587-8a12b89e2186"],
+Cell[208263, 4572, 406, 8, 79, "Text",ExpressionUUID->"21bfde7a-2c5c-4a92-a9b1-7fda07677624"],
+Cell[208672, 4582, 24473, 577, 2382, "Input",ExpressionUUID->"b5767154-72ac-4193-ae3b-769f8643c433"]
 }, Closed]],
 Cell[CellGroupData[{
-Cell[231899, 5131, 292, 4, 98, "Title",ExpressionUUID->"5fc239ca-55da-4460-b950-7fe88eed2c81"],
-Cell[232194, 5137, 556, 9, 110, "Text",ExpressionUUID->"bcdfdd1b-45dc-4092-8222-9834319362c1"],
+Cell[233182, 5164, 292, 4, 98, "Title",ExpressionUUID->"5fc239ca-55da-4460-b950-7fe88eed2c81"],
+Cell[233477, 5170, 556, 9, 110, "Text",ExpressionUUID->"bcdfdd1b-45dc-4092-8222-9834319362c1"],
 Cell[CellGroupData[{
-Cell[232775, 5150, 23765, 547, 1665, "Input",ExpressionUUID->"12e3224d-85ea-4077-a7a5-67b3f4f96a04"],
-Cell[256543, 5699, 680, 9, 45, "Output",ExpressionUUID->"ecd28ce9-2417-42f6-a1e6-5f01a60374d6"]
+Cell[234058, 5183, 27116, 627, 1878, "Input",ExpressionUUID->"12e3224d-85ea-4077-a7a5-67b3f4f96a04"],
+Cell[261177, 5812, 680, 9, 45, "Output",ExpressionUUID->"ecd28ce9-2417-42f6-a1e6-5f01a60374d6"]
 }, Closed]]
 }, Closed]]
 }

@@ -44,37 +44,40 @@ def crossorderapplied(u,parameter,equilibrium):
     
 def secondorderapplied(u,v):
     '''This function is a coded version of F_2'''
-    DS=zeros(nvar,1)
+    DS = zeros(nvar, 1)
     for counter1 in range(nvar):
         for counter2 in range(nvar):
             DS=Add(DS,Mul(u.dummy[counter1],v.dummy[counter2], \
                           secondorderderivatives[counter1][counter2]))
-    return DS
+    
+    return Mul(Pow(2, -1), DS)
     
 def thirdorderapplied(u,v,w):
     '''This function is a coded version of F_3'''
-    TS=zeros(nvar,1)
+    TS = zeros(nvar, 1)
     for counter1 in range(nvar):
         for counter2 in range(nvar):
             for counter3 in range(nvar):
                 TS=Add(TS,Mul(u.dummy[counter1],v.dummy[counter2],w.dummy[counter3], \
                               thirdorderderivatives[counter1][counter2][counter3]))
-    return TS
+    
+    return Mul(Pow(math.factorial(3), -1), TS)
 
 def fourthorderapplied(u,v,w,r):
     '''This function is a coded version of F_4'''
-    Q4S=zeros(nvar,1)
+    Q4S = zeros(nvar, 1)
     for counter1 in range(nvar):
         for counter2 in range(nvar):
             for counter3 in range(nvar):
                 for counter4 in range(nvar):
                     Q4S=Add(Q4S,Mul(u.dummy[counter1],v.dummy[counter2],w.dummy[counter3],r.dummy[counter4], \
                                     fourthorderderivatives[counter1][counter2][counter3][counter4]))
-    return Q4S
+    
+    return Mul(Pow(math.factorial(4), -1), Q4S)
 
 def fifthorderapplied(u,v,w,r,s):
     '''This function is a coded version of F_5'''
-    Q5S=zeros(nvar,1)
+    Q5S = zeros(nvar, 1)
     for counter1 in range(nvar):
         for counter2 in range(nvar):
             for counter3 in range(nvar):
@@ -83,7 +86,8 @@ def fifthorderapplied(u,v,w,r,s):
                         Q5S=Add(Q5S,Mul(u.dummy[counter1],v.dummy[counter2], \
                                         w.dummy[counter3],r.dummy[counter4],s.dummy[counter5], \
                                         fifthorderderivatives[counter1][counter2][counter3][counter4][counter5]))
-    return Q5S
+    
+    return Mul(Pow(math.factorial(5), -1), Q5S)
 
 def dummyvareval(vector,negativeRHS,coefmat):
     '''This function evaluates all the dummy variables used to solve a linear
