@@ -512,6 +512,8 @@ hatphiNF = Vector('hatphiNF')
 hatphiNF.dummy = Matrix(phiNF.dummy[0:nvar-numberofzerotemporalderivatives]
                         + [0]*numberofzerotemporalderivatives)
 
+phiNF_eval = evaluation_dict(phiNF)
+
 print('First-order ready')
 
 '''The script solves the linear equations to find the second-order vectors.'''
@@ -520,9 +522,12 @@ DS_phiphi = secondorderapplied(phiNF, phiNF)
 
 negativeRHS.actualcoord = DS_phiphi
 
-Q02NF.actualcoord = linearsolver(Q02NF, negativeRHS, coefmat0)
+Q02NF = linearsolver(Q02NF, negativeRHS, coefmat0)
 
-Q22NF.actualcoord = linearsolver(Q22NF, negativeRHS, coefmat2)
+Q22NF = linearsolver(Q22NF, negativeRHS, coefmat2)
+
+Q02NF_eval = evaluation_dict(Q02NF)
+Q22NF_eval = evaluation_dict(Q22NF)
         
 print('Second-order ready')
 
@@ -554,6 +559,8 @@ for row in range(nvar):
         psiNF.actualcoord = psiNF.actualcoord.subs(coefmat1.dummy[row,col],coefmat1.actualcoord[row,col])
         if row<nvar-1 and col<nvar-1:
             psiNF.actualcoord = psiNF.actualcoord.subs(coefsubmatrix.dummy[row,col],coefsubmatrix.actualcoord[row,col])
+
+psiNF_eval = evaluation_dict(psiNF)
 
 '''The script gets the third-order oefficient.'''
 
@@ -624,7 +631,10 @@ if fifthcoef=='y':
         
     negativeRHS.actualcoord = Add(Mul(2, DS_phiQ22), TS_phiphiphi)
     
-    Q33NF.actualcoord = linearsolver(Q33NF, negativeRHS, coefmat3) # The script finds Q_3^3
+    Q33NF = linearsolver(Q33NF, negativeRHS, coefmat3) # The script finds Q_3^3
+    
+    Q13NF_eval = evaluation_dict(Q13NF)
+    Q33NF_eval = evaluation_dict(Q33NF)
     
     print('Third-order ready')
     
@@ -650,7 +660,7 @@ if fifthcoef=='y':
                                   DS_Q22Q22, Mul(2, DS_phiQ13), Mul(6, TS_phiphiQ02),
                                   Mul(3, TS_phiphiQ22), Mul(3, Q4S_phiphiphiphi))
     
-    Q04NF.actualcoord = linearsolver(Q04NF, negativeRHS, coefmat0)
+    Q04NF = linearsolver(Q04NF, negativeRHS, coefmat0)
     
     hatQ22NF = Vector('hatQ22NF')
     hatQ22NF.dummy = Matrix(Q22NF.dummy[0:nvar-numberofzerotemporalderivatives]
@@ -660,7 +670,10 @@ if fifthcoef=='y':
                                   Mul(2, DS_phiQ33), Mul(6, TS_phiphiQ02), Mul(6, TS_phiphiQ22),
                                   Mul(4, Q4S_phiphiphiphi))
     
-    Q24NF.actualcoord = linearsolver(Q24NF, negativeRHS, coefmat2)
+    Q24NF = linearsolver(Q24NF, negativeRHS, coefmat2)
+    
+    Q04NF_eval = evaluation_dict(Q04NF)
+    Q24NF_eval = evaluation_dict(Q24NF)
         
     print('Fourth-order ready')
     
@@ -697,12 +710,11 @@ if fifthcoef=='y':
     print('The calculation of the fifth-order coefficient has been carried out successfully. ' +
           'The saving process could take longer.')
     
-for varnum in range(nvar):
-    C3 = C3.subs(Q02NF.dummy[varnum], Q02NF.actualcoord[varnum])
-    C3 = C3.subs(Q22NF.dummy[varnum], Q22NF.actualcoord[varnum])
-for varnum in range(nvar):
-    C3 = C3.subs(psiNF.dummy[varnum], psiNF.actualcoord[varnum])
-    C3 = C3.subs(phiNF.dummy[varnum], phiNF.actualcoord[varnum])
+C3 = C3.subs(Q02NF_eval)
+C3 = C3.subs(Q22NF_eval)
+
+C3 = C3.subs(phiNF_eval)
+C3 = C3.subs(psiNF_eval)
     
 file=open('Third-order coefficient.txt','w')
 file.write(latex(C3))
@@ -716,18 +728,17 @@ if fifthcoef=='n':
     else:
         print('Everything but the fifth-order and cross-order coefficients was computed and saved.')
 if fifthcoef=='y':
-    for varnum in range(nvar):
-        C5 = C5.subs(Q04NF.dummy[varnum], Q04NF.actualcoord[varnum])
-        C5 = C5.subs(Q24NF.dummy[varnum], Q24NF.actualcoord[varnum])
-    for varnum in range(nvar):
-        C5 = C5.subs(Q13NF.dummy[varnum], Q13NF.actualcoord[varnum])
-        C5 = C5.subs(Q33NF.dummy[varnum], Q33NF.actualcoord[varnum])
-    for varnum in range(nvar):
-        C5 = C5.subs(Q02NF.dummy[varnum], Q02NF.actualcoord[varnum])
-        C5 = C5.subs(Q22NF.dummy[varnum], Q22NF.actualcoord[varnum])
-    for varnum in range(nvar):
-        C5 = C5.subs(psiNF.dummy[varnum], psiNF.actualcoord[varnum])
-        C5 = C5.subs(phiNF.dummy[varnum], phiNF.actualcoord[varnum])
+    C5 = C5.subs(Q04NF_eval)
+    C5 = C5.subs(Q24NF_eval)
+    
+    C5 = C5.subs(Q13NF_eval)
+    C5 = C5.subs(Q33NF_eval)
+    
+    C5 = C5.subs(Q02NF_eval)
+    C5 = C5.subs(Q22NF_eval)
+    
+    C5 = C5.subs(phiNF_eval)
+    C5 = C5.subs(psiNF_eval)
     
     file = open('Fifth-order coefficient.txt','w')
     file.write(latex(C5))
