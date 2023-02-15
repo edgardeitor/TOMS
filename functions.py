@@ -32,50 +32,50 @@ def isfloat(value):
                     
 def crossorderapplied(u,parameter,equilibrium):
     '''This function is a coded version of F_{1,1}'''
-    SS=zeros(nvar,1)
-    firstordereval=firstorderderivatives
+    SS = zeros(nvar,1)
+    firstordereval = firstorderderivatives
     for counter1 in range(nvar):
         for counter2 in range(nvar):
-            firstordereval[counter1]=Matrix(firstordereval[counter1]).subs(var[counter2], equilibrium[counter2])
+            firstordereval[counter1] = Matrix(firstordereval[counter1]).subs(var[counter2], equilibrium[counter2])
     for counter1 in range(nvar):
-        SS=Add(SS,Mul(u.dummy[counter1], \
-                      diff(firstordereval[counter1],parameter)))
+        SS = Add(SS, Mul(u.dummy[counter1], \
+                         diff(firstordereval[counter1],parameter)))
     return SS
     
-def secondorderapplied(u,v):
+def secondorderapplied(u, v):
     '''This function is a coded version of F_2'''
     DS = zeros(nvar, 1)
     for counter1 in range(nvar):
         for counter2 in range(nvar):
-            DS=Add(DS,Mul(u.dummy[counter1],v.dummy[counter2], \
-                          secondorderderivatives[counter1][counter2]))
+            DS = Add(DS, Mul(u.dummy[counter1],v.dummy[counter2], \
+                             secondorderderivatives[counter1][counter2]))
     
     return Mul(Pow(2, -1), DS)
     
-def thirdorderapplied(u,v,w):
+def thirdorderapplied(u, v, w):
     '''This function is a coded version of F_3'''
     TS = zeros(nvar, 1)
     for counter1 in range(nvar):
         for counter2 in range(nvar):
             for counter3 in range(nvar):
-                TS=Add(TS,Mul(u.dummy[counter1],v.dummy[counter2],w.dummy[counter3], \
-                              thirdorderderivatives[counter1][counter2][counter3]))
+                TS = Add(TS, Mul(u.dummy[counter1],v.dummy[counter2],w.dummy[counter3], \
+                                 thirdorderderivatives[counter1][counter2][counter3]))
     
     return Mul(Pow(math.factorial(3), -1), TS)
 
-def fourthorderapplied(u,v,w,r):
+def fourthorderapplied(u, v, w, r):
     '''This function is a coded version of F_4'''
     Q4S = zeros(nvar, 1)
     for counter1 in range(nvar):
         for counter2 in range(nvar):
             for counter3 in range(nvar):
                 for counter4 in range(nvar):
-                    Q4S=Add(Q4S,Mul(u.dummy[counter1],v.dummy[counter2],w.dummy[counter3],r.dummy[counter4], \
-                                    fourthorderderivatives[counter1][counter2][counter3][counter4]))
+                    Q4S = Add(Q4S, Mul(u.dummy[counter1],v.dummy[counter2],w.dummy[counter3],r.dummy[counter4], \
+                                       fourthorderderivatives[counter1][counter2][counter3][counter4]))
     
     return Mul(Pow(math.factorial(4), -1), Q4S)
 
-def fifthorderapplied(u,v,w,r,s):
+def fifthorderapplied(u, v, w, r, s):
     '''This function is a coded version of F_5'''
     Q5S = zeros(nvar, 1)
     for counter1 in range(nvar):
@@ -83,13 +83,13 @@ def fifthorderapplied(u,v,w,r,s):
             for counter3 in range(nvar):
                 for counter4 in range(nvar):
                     for counter5 in range(nvar):
-                        Q5S=Add(Q5S,Mul(u.dummy[counter1],v.dummy[counter2], \
-                                        w.dummy[counter3],r.dummy[counter4],s.dummy[counter5], \
-                                        fifthorderderivatives[counter1][counter2][counter3][counter4][counter5]))
+                        Q5S = Add(Q5S, Mul(u.dummy[counter1],v.dummy[counter2], \
+                                           w.dummy[counter3],r.dummy[counter4],s.dummy[counter5], \
+                                               fifthorderderivatives[counter1][counter2][counter3][counter4][counter5]))
     
     return Mul(Pow(math.factorial(5), -1), Q5S)
 
-def dummyvareval(vector,negativeRHS,coefmat):
+def dummyvareval(vector, negativeRHS, coefmat):
     '''This function evaluates all the dummy variables used to solve a linear
     system in a simple way'''
     for row in range(nvar):
@@ -98,10 +98,14 @@ def dummyvareval(vector,negativeRHS,coefmat):
             vector=vector.subs(coefmat.dummy[row,col],coefmat.actualcoord[row,col])
     return vector
 
-def linearsolver(vector,negativeRHS,coefmat):
+def linearsolver(vector, negativeRHS, coefmat):
     '''This function solves a linear system with dummy variables and then uses
     the previous function to evaluate the dummy variables'''
     vector.actualcoord=linsolve(Add(Mul(coefmat.dummy,vector.dummy),negativeRHS.dummy),list(vector.dummy))
     vector.actualcoord=transpose(Matrix(list(vector.actualcoord)))
     vector.actualcoord=dummyvareval(vector.actualcoord,negativeRHS,coefmat)
-    return vector.actualcoord
+    return vector
+
+def evaluation_dict(vector):
+    actual_dict = dict(zip(vector.dummy, vector.actualcoord))
+    return actual_dict
