@@ -53,6 +53,13 @@ cod2='y' '''This variable must be equal to either 'y' or 'n', depending on wheth
          to find codimension-two bifuration points on each of the bifurcation curves. If the expression of
          the third-order oefficient is big, this operation can take a long time. By default thisvariable
          is set as 'y'.'''
+         
+considerC3='n' '''This variable must be equal to either 'y' or'n', depending on whether you want to put the third
+                order coefficient in all the calculations from third to fifth order.'''
+         
+alphaval='n' '''This variable must be equal to either 'y' or 'n', depending on whether you want to compute
+                the coefficients \alpha_i. If this is set as 'y', then the calculation will be carried out if
+                and only if fifthcoeff=='y' '''
 
 plot2d='y' '''This variable must be equal to either 'y' or 'n', depending on whether you would like to get
            the output required by Mathematica to plot the bifurcation diagram in terms of two parameters.

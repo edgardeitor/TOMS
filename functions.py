@@ -109,3 +109,26 @@ def linearsolver(vector, negativeRHS, coefmat):
 def evaluation_dict(vector):
     actual_dict = dict(zip(vector.dummy, vector.actualcoord))
     return actual_dict
+
+def critical_linearsolver(vector, negativeRHS, criticalcol, coefsubmatrix, submatrixrows, submatrixcols):
+    '''This function finds the solution to the equations that determine a solvability condition'''
+    vector.dummy[criticalcol] = 0
+    vector.actualcoord[criticalcol] = 0
+    
+    auxiliaryterm, = linsolve(Add(Mul(coefsubmatrix.dummy,Matrix(vector.actualcoord).extract(submatrixcols,[0])),
+                                  negativeRHS.dummy.extract(submatrixrows,[0])),
+                              list(Matrix(vector.actualcoord).extract(submatrixcols,[0])))
+        
+    vector.actualcoord[0:criticalcol] = auxiliaryterm[0:criticalcol]
+    vector.actualcoord[criticalcol+1:nvar] = auxiliaryterm[criticalcol:nvar-1]
+    
+    vector.actualcoord = Matrix(vector.actualcoord)
+    
+    for row in range(nvar):
+        vector.actualcoord = vector.actualcoord.subs(negativeRHS.dummy[row],negativeRHS.actualcoord[row])
+        for col in range(nvar-1):
+            if row<nvar-1:
+                vector.actualcoord = vector.actualcoord.subs(coefsubmatrix.dummy[row,col],
+                                                             coefsubmatrix.actualcoord[row,col])
+                
+    return vector

@@ -10,9 +10,9 @@ init_printing()
 from sympy.solvers import solve
 from mpmath import findroot
 
-'''The script runs the file 'data.py'.'''
+'''The script runs the file 'name_of_model.py'.'''
 
-modelname=input('Enter the name of the system you would like to analyze: ')
+modelname = input('Enter the name of the system you would like to analyze: ')
 
 if not os.path.isdir(modelname):
     print('The directory of that system was not found. Create it first and place ' + 
@@ -37,7 +37,7 @@ except:
     print('File functions.py is not in the same folder as the script you are running')
     exit()
 
-file=open('List of Variables.txt','w')
+file = open('List of Variables.txt', 'w')
 
 '''The script defines the vector of variables as symbols in sympy.'''
 
@@ -63,20 +63,20 @@ try:
     parameters
 except:
     print('Parameters were not provided. The script will assume that there are no parameters.')
-    parameters=[]
+    parameters = []
 
 npar=len(parameters)
 
 if npar>0:
-    newparameters=dict()
+    newparameters = dict()
     for key in parameters.keys():
         try:
             exec(key + ' = symbols(key, real=True)')
-            newparameters[eval(key)]=parameters[key]
+            newparameters[eval(key)] = parameters[key]
         except:
             print('The script could not define your variable ' + key + ' as a variable')
             exit()
-    parameters=newparameters
+    parameters = newparameters
     
 '''It defines the diffusion matrix as a symbolic matrix in terms of the parameters of the system.'''
     
@@ -89,12 +89,12 @@ except:
 try:
     for row in range(nvar):
         for col in range(nvar):
-            diffmatrix[row][col]=eval(str(diffmatrix[row][col]).replace('^','**'))
+            diffmatrix[row][col] = eval(str(diffmatrix[row][col]).replace('^','**'))
 except:
     print('The diffusion matrix is not a function of the parameters of the system')
     exit()
         
-diffmatrix=Matrix(diffmatrix)
+diffmatrix = Matrix(diffmatrix)
 
 # Kinetics
 
@@ -108,29 +108,28 @@ except:
     
 for functionnumber in range(nvar):
     try:
-        kinetics[functionnumber]=eval(str(kinetics[functionnumber]).replace('^','**'))
+        kinetics[functionnumber] = eval(str(kinetics[functionnumber]).replace('^','**'))
     except:
         print('The expression ' + kinetics[functionnumber] + 'is not a function of the parameters of your system')
         exit()
 
-kinetics=Matrix(kinetics)
+kinetics = Matrix(kinetics)
 
 '''The script writes the list of kinetics functions in LaTeX in a text file.'''
 
-file=open('Kinetics.txt','w')
+file = open('Kinetics.txt','w')
 for functionnumber in range(nvar):
     file.write(latex(kinetics[functionnumber]) + '\n')
 file.close()
 
-jacobianmat=kinetics.jacobian(var)
+jacobianmat = kinetics.jacobian(var)
 
 # Equilibria
 
 '''The script evaluates the matrix of kinetics and searches for the equilibria at the parameters provided.'''
 
-kineticsevaluated=kinetics
-for key in parameters:
-    kineticsevaluated=kineticsevaluated.subs(key,parameters[key])
+kineticsevaluated = kinetics
+kineticsevaluated = kineticsevaluated.subs(parameters)
 eq=solve(kineticsevaluated,var)
 
 '''If the script does not find any equilibrium point, it asks you whether you would like to 
@@ -160,8 +159,7 @@ while eq==[]:
                                          'Enter a value of ' + whichparam + ': ')
         parameters[whichparam]=eval(parameters[whichparam])
         kineticsevaluated=kinetics
-        for key in parameters:
-            kineticsevaluated=kineticsevaluated.subs(key,parameters[key])
+        kineticsevaluated = kineticsevaluated.subs(parameters)
         eq=solve(kineticsevaluated,var)
     else:
         break
@@ -224,26 +222,25 @@ matrix at the parameters provided.'''
 if eq!=[]:
     for varnum in range(nvar):
         try:
-            determinanteval=determinanteval.subs(var[varnum],eq[varnum])
-            derivativeeval=derivativeeval.subs(var[varnum],eq[varnum])
+            determinanteval=determinanteval.subs(var[varnum], eq[varnum])
+            derivativeeval=derivativeeval.subs(var[varnum], eq[varnum])
         except:
-            determinanteval=determinanteval.subs(var[varnum],eq[var[varnum]])
-            derivativeeval=derivativeeval.subs(var[varnum],eq[var[varnum]])
-    for key in parameters:
-        determinanteval=determinanteval.subs(key,parameters[key])
-        derivativeeval=derivativeeval.subs(key,parameters[key])
-    getout=0
+            determinanteval=determinanteval.subs(var[varnum], eq[var[varnum]])
+            derivativeeval=derivativeeval.subs(var[varnum], eq[var[varnum]])
+    determinanteval = determinanteval.subs(parameters)
+    derivativeeval = derivativeeval.subs(parameters)
+    getout = 0
     
     '''It tries to check whether there is a value of \mu that solves both equations
     that define the Turing bifurcation at the same time.'''
     
     try:
-        mucritical=solve(derivativeeval,muNF)
+        mucritical = solve(derivativeeval,muNF)
         for muvalue in mucritical:
-            muvalue=complex(muvalue).real
+            muvalue = complex(muvalue).real
             if abs(N(determinanteval.subs(muNF,muvalue)))<5*tol:
-                ksquared=muvalue
-                getout=1
+                ksquared = muvalue
+                getout = 1
                 break
     except:
         pass
@@ -252,28 +249,28 @@ if eq!=[]:
     changed in order to find the bifurcation.'''
     
     if getout==0:
-        determinanteval=jacobianmatdet
-        derivativeeval=determinantderivative
+        determinanteval = jacobianmatdet
+        derivativeeval = determinantderivative
         print('There is no Turing bifurcation for the parameters provided.')
         print('The parameters of the system are:')
         for key in parameters.keys():
             print(key)
         parametertochange=input('Enter a parameter that can be changed in order to find the wavenumber ' +
                                 '(Enter 0 if you do not want Python to find the bifurcation condition): ')
-        counter=0
+        counter = 0
         while True:
             
             '''The script checks whether the equations change after changing the parameter provided.'''
             
             try:
                 if parametertochange=='0':
-                    ksquared=0
-                    getout=1
+                    ksquared = 0
+                    getout = 1
                     break
                 if counter==1:
-                    parametertochange=input('Enter a parameter that can be changed in order to find the wavenumber ' +
-                                            '(Enter 0 if you do not want Python to find the bifurcation condition): ')
-                parametertochange=eval(parametertochange)
+                    parametertochange = input('Enter a parameter that can be changed in order to find the wavenumber ' +
+                                              '(Enter 0 if you do not want Python to find the bifurcation condition): ')
+                parametertochange = eval(parametertochange)
                 if parametertochange not in parameters.keys():
                     print('You did not enter a parameter of the system.')
                     continue
@@ -285,43 +282,43 @@ if eq!=[]:
                             continue
                 break
             except:
-                counter=1
+                counter = 1
                 
         if getout==0:
-            kineticsevaluated=kinetics
+            kineticsevaluated = kinetics
             
             '''The script evaluates the kinetics to find the new equilibrium.'''
             
             for key in parameters:
                 if key!=parametertochange:
-                    kineticsevaluated=kineticsevaluated.subs(key,parameters[key])
-                    determinanteval=determinanteval.subs(key,parameters[key])
-                    derivativeeval=derivativeeval.subs(key,parameters[key])
+                    kineticsevaluated = kineticsevaluated.subs(key, parameters[key])
+                    determinanteval = determinanteval.subs(key, parameters[key])
+                    derivativeeval = derivativeeval.subs(key, parameters[key])
                 else:
-                    initialpartochange=parameters[key]
-            initialeq=eq
-            eq=solve(kineticsevaluated,var)[eqnumber]
+                    initialpartochange = parameters[key]
+            initialeq = eq
+            eq = solve(kineticsevaluated, var)[eqnumber]
             for varnum in range(nvar):
-                determinanteval=determinanteval.subs(var[varnum],eq[varnum])
-                derivativeeval=derivativeeval.subs(var[varnum],eq[varnum])
+                determinanteval = determinanteval.subs(var[varnum], eq[varnum])
+                derivativeeval = derivativeeval.subs(var[varnum], eq[varnum])
                 
             '''The script tries to find a solution to both equations numerically starting from \mu=1
             and the parameter value provided previously.'''
                 
             try:
-                zerofunction=[lambda mutofind, parametertofind:
-                              determinanteval.subs([(muNF,mutofind),(parametertochange,parametertofind)]),
-                                  lambda mutofind, parametertofind:
-                                      derivativeeval.subs([(muNF,mutofind),(parametertochange,parametertofind)])]
-                [muvalue,newparval]=findroot(zerofunction,(1,initialpartochange))
-                muvalue=complex(muvalue).real
-                newparval=complex(newparval).real
-                if (abs(simplify(determinanteval.subs([(muNF,muvalue),(parametertochange,newparval)])))<tol
-                    and abs(simplify(derivativeeval.subs([(muNF,muvalue),(parametertochange,newparval)])))<tol):
-                    ksquared=muvalue
-                    parameters[parametertochange]=newparval
+                zerofunction = [lambda mutofind, parametertofind:
+                                determinanteval.subs([(muNF, mutofind), (parametertochange, parametertofind)]),
+                                lambda mutofind, parametertofind:
+                                    derivativeeval.subs([(muNF, mutofind), (parametertochange, parametertofind)])]
+                [muvalue, newparval] = findroot(zerofunction, (1, initialpartochange))
+                muvalue = complex(muvalue).real
+                newparval = complex(newparval).real
+                if (abs(simplify(determinanteval.subs([(muNF, muvalue), (parametertochange, newparval)])))<tol
+                    and abs(simplify(derivativeeval.subs([(muNF, muvalue), (parametertochange, newparval)])))<tol):
+                    ksquared = muvalue
+                    parameters[parametertochange] = newparval
                     print('The Turing bifurcation was found for ' + str(parametertochange) + '=' + str(newparval))
-                    getout=1
+                    getout = 1
             except:
                 pass
         if getout==0:
@@ -330,21 +327,21 @@ if eq!=[]:
             in terms of the parameter and then solves the other equation to find it.'''
             
             try:
-                mucritical=solve(derivativeeval,muNF)
+                mucritical = solve(derivativeeval, muNF)
                 for muvalue in mucritical:
                     try:
-                        newparval=float(findroot(lambda parametertofind:
-                                                 determinanteval.subs([(muNF,muvalue),
-                                                                       (parametertochange,parametertofind)]),
-                                                     initialpartochange))
-                        muvalue=complex(simplify(muvalue.subs(parametertochange,newparval))).real
-                        newparval=complex(newparval).real
-                        if simplify(determinanteval.subs([(muNF,muvalue),(parametertochange,newparval)]))<tol:
-                            ksquared=muvalue
-                            parameters[parametertochange]=newparval
+                        newparval = float(findroot(lambda parametertofind:
+                                                   determinanteval.subs([(muNF, muvalue),
+                                                                         (parametertochange, parametertofind)]),
+                                                   initialpartochange))
+                        muvalue = complex(simplify(muvalue.subs(parametertochange, newparval))).real
+                        newparval = complex(newparval).real
+                        if simplify(determinanteval.subs([(muNF, muvalue), (parametertochange, newparval)]))<tol:
+                            ksquared = muvalue
+                            parameters[parametertochange] = newparval
                             print('The Turing bifurcation was found for ' + str(parametertochange) + '='
                                   + str(newparval))
-                            getout=1
+                            getout = 1
                             break
                     except:
                         continue
@@ -358,16 +355,16 @@ if eq!=[]:
             initial ondition.'''
             
             try:
-                intersection=resultant(determinanteval, derivativeeval, muNF)
-                newparval=float(findroot(lambda parametertofind:
+                intersection = resultant(determinanteval, derivativeeval, muNF)
+                newparval = float(findroot(lambda parametertofind:
                                          intersection.subs(parametertochange,parametertofind),initialpartochange))
-                mucritical=solve(derivativeeval.subs(parametertochange,newparval),muNF)
-                newparval=complex(newparval).real
+                mucritical = solve(derivativeeval.subs(parametertochange,newparval),muNF)
+                newparval = complex(newparval).real
                 for muvalue in mucritical:
-                    muvalue=complex(muvalue).real
+                    muvalue = complex(muvalue).real
                     if abs(simplify(determinanteval.subs([(muNF,muvalue),(parametertochange,newparval)])))<tol:
-                        ksquared=muvalue
-                        parameters[parametertochange]=newparval
+                        ksquared = muvalue
+                        parameters[parametertochange] = newparval
                         print('The Turing bifurcation was found for ' + str(parametertochange) + '=' + str(newparval))
                         getout=1
                         break
@@ -377,17 +374,17 @@ if eq!=[]:
             '''If none of the previous methods worked, then the code will ask you to provide a wavenumber.'''
             
         if getout==0:
-            eq=initialeq
-            kval=input('This script could not find the value of k. ' +
-                       'Make sure that you have a Turing bifurcation for the parameter values provided. ' +
-                           'If you are at a Turing bifurcation. Enter a value of k you want to consider: ')
+            eq = initialeq
+            kval = input('This script could not find the value of k. ' +
+                         'Make sure that you have a Turing bifurcation for the parameter values provided. ' +
+                         'If you are at a Turing bifurcation. Enter a value of k you want to consider: ')
             while not isfloat(kval):
-                kval=input('What you entered before is not a number. ' +
-                           'Enter a value of k you want to consider: ')
-            kval=eval(kval)
-            ksquared=Pow(kval,2)
+                kval = input('What you entered before is not a number. ' +
+                             'Enter a value of k you want to consider: ')
+            kval = eval(kval)
+            ksquared = Pow(kval, 2)
 else:
-    ksquared=0
+    ksquared = 0
     
 '''The script saves the functions to find a bifurcation into text files.'''
     
@@ -406,13 +403,13 @@ file.close()
 '''The script defines a vector that will be used to find the solutions to all the linear systems
 of equations and finds the derivatives of the kinetics up to order five.'''
 
-negativeRHS=Vector('negativeRHS')
+negativeRHS = Vector('negativeRHS')
 
-firstorderderivatives=list()
-secondorderderivatives=list()
-thirdorderderivatives=list()
-fourthorderderivatives=list()
-fifthorderderivatives=list()
+firstorderderivatives = list()
+secondorderderivatives = list()
+thirdorderderivatives = list()
+fourthorderderivatives = list()
+fifthorderderivatives = list()
 for counter1 in range(nvar):
     firstorderderivatives.append(diff(kinetics,var[counter1]))
     secondorderderivatives.append(list())
@@ -438,13 +435,13 @@ for counter1 in range(nvar):
                         diff(fourthorderderivatives[counter1][counter2][counter3][counter4], var[counter5]))
 
 phiNF = Vector('phi^NF')
-Q02NF = Vector('Q02^NF')
-Q22NF = Vector('Q22^NF')
+W02NF = Vector('W02^NF')
+W22NF = Vector('W22^NF')
 psiNF = Vector('psi^NF')
-Q13NF = Vector('Q13^NF')
-Q33NF = Vector('Q33^NF')
-Q04NF = Vector('Q04^NF')
-Q24NF = Vector('Q24^NF')
+W13NF = Vector('W13^NF')
+W33NF = Vector('W33^NF')
+W04NF = Vector('W04^NF')
+W24NF = Vector('W24^NF')
 
 getout=0
 
@@ -453,23 +450,27 @@ getout=0
 if eq!=[]:
     for row in range(nvar):
         for col in range(nvar):
-            submatrixrows=list(range(nvar))
-            submatrixcols=list(range(nvar))
+            submatrixrows = list(range(nvar))
+            submatrixcols = list(range(nvar))
             submatrixrows.remove(row)
             submatrixcols.remove(col)
-            invertiblesubmatrix=coefmat1.actualcoord.extract(submatrixrows,submatrixcols)
-            submatrixeval=invertiblesubmatrix
-            for key in parameters:
-                submatrixeval=submatrixeval.subs(key,parameters[key])
+            invertiblesubmatrix = coefmat1.actualcoord.extract(submatrixrows, submatrixcols)
+            submatrixeval = invertiblesubmatrix
+            submatrixeval = submatrixeval.subs(parameters)
             if eq!=[]:
                 for varnum in range(nvar):
-                    submatrixeval=submatrixeval.subs(var[varnum],eq[varnum])
-            submatrixeval=submatrixeval.subs(muNF,ksquared)
-            if abs(N(submatrixeval.det()))>tol:
-                phiNF.actualcoord[col]=1
-                criticalrow=row
-                criticalcol=col
-                getout=1
+                    submatrixeval = submatrixeval.subs(var[varnum], eq[varnum])
+                submatrixeval = submatrixeval.subs(muNF, ksquared)
+                if abs(N(submatrixeval.det()))>tol:
+                    phiNF.actualcoord[col] = 1
+                    criticalrow = row
+                    criticalcol = col
+                    getout=1
+                    break
+            else:
+                phiNF.actualcoord[0] = 1
+                criticalrow = 0
+                criticalcol = 0
                 break
         if getout==1:
             break
@@ -506,7 +507,7 @@ for row in range(nvar):
 '''The script normalizes the \phi_1^1 if requested.'''
 
 if phiunit=='y':
-    phiNF.actualcoord = Mul(Pow(sqrt(phiNF.actualcoord.dot(phiNF.actualcoord)),-1), phiNF.actualcoord)
+    phiNF.actualcoord = Mul(Pow(sqrt(phiNF.actualcoord.dot(phiNF.actualcoord)), -1), phiNF.actualcoord)
     
 hatphiNF = Vector('hatphiNF')
 hatphiNF.dummy = Matrix(phiNF.dummy[0:nvar-numberofzerotemporalderivatives]
@@ -522,19 +523,19 @@ DS_phiphi = secondorderapplied(phiNF, phiNF)
 
 negativeRHS.actualcoord = DS_phiphi
 
-Q02NF = linearsolver(Q02NF, negativeRHS, coefmat0)
+W02NF = linearsolver(W02NF, negativeRHS, coefmat0)
 
-Q22NF = linearsolver(Q22NF, negativeRHS, coefmat2)
+W22NF = linearsolver(W22NF, negativeRHS, coefmat2)
 
-Q02NF_eval = evaluation_dict(Q02NF)
-Q22NF_eval = evaluation_dict(Q22NF)
+W02NF_eval = evaluation_dict(W02NF)
+W22NF_eval = evaluation_dict(W22NF)
         
 print('Second-order ready')
 
 '''The script defines a few terms to find the third-order coefficient.'''
 
-DS_phiQ02 = secondorderapplied(phiNF, Q02NF)
-DS_phiQ22 = secondorderapplied(phiNF, Q22NF)
+DS_phiW02 = secondorderapplied(phiNF, W02NF)
+DS_phiW22 = secondorderapplied(phiNF, W22NF)
 
 TS_phiphiphi = thirdorderapplied(phiNF, phiNF, phiNF)
     
@@ -566,7 +567,7 @@ psiNF_eval = evaluation_dict(psiNF)
 
 denominator = hatphiNF.dummy.dot(psiNF.dummy)
 
-C3 = Mul(Pow(denominator, -1), psiNF.dummy.dot(Add(Mul(4, DS_phiQ02), Mul(2, DS_phiQ22),
+C3 = Mul(Pow(denominator, -1), psiNF.dummy.dot(Add(Mul(4, DS_phiW02), Mul(2, DS_phiW22),
                                                    Mul(3, TS_phiphiphi))))
 
 '''The script gets the cross-order coefficient if requested.'''
@@ -597,126 +598,119 @@ if crosscoef=='y':
 '''The script continues with the following orders to find C5 if requested.'''
 
 if fifthcoef=='y':
-    Q13NF.actualcoord[criticalcol] = 0
+    '''The script finds W_1^3 using an analogous approach to the one used to find \phi_1^1.'''
     
-    '''The script finds Q_1^3 using an analogous approach to the one used to find \phi_1^1.'''
+    negativeRHS.actualcoord = Add(Mul(4, DS_phiW02), Mul(2, DS_phiW22), Mul(3, TS_phiphiphi))
     
-    negativeRHS.actualcoord = Add(Mul(-1, C3, hatphiNF.dummy), Mul(4, DS_phiQ02), Mul(2, DS_phiQ22),
-                                  Mul(3, TS_phiphiphi))
+    if considerC3=='y':
+        negativeRHS.actualcoord = Add(negativeRHS.actualcoord, Mul(-1, C3, hatphiNF.dummy))
     
-    auxiliaryterm, = linsolve(Add(Mul(coefsubmatrix.dummy,Matrix(Q13NF.actualcoord).extract(submatrixcols,[0])),
-                                  negativeRHS.dummy.extract(submatrixrows,[0])),
-                              list(Matrix(Q13NF.actualcoord).extract(submatrixcols,[0])))
-        
-    Q13NF.actualcoord[0:criticalcol] = auxiliaryterm[0:criticalcol]
-    Q13NF.actualcoord[criticalcol+1:nvar] = auxiliaryterm[criticalcol:nvar-1]
+    W13NF = critical_linearsolver(W13NF, negativeRHS, criticalcol, coefsubmatrix, submatrixrows, submatrixcols)
     
-    Q13NF.actualcoord = Matrix(Q13NF.actualcoord)
-    
-    for row in range(nvar):
-        Q13NF.actualcoord = Q13NF.actualcoord.subs(negativeRHS.dummy[row], negativeRHS.actualcoord[row])
-        for col in range(nvar-1):
-            if row<nvar-1:
-                Q13NF.actualcoord = Q13NF.actualcoord.subs(coefsubmatrix.dummy[row, col],
-                                                           coefsubmatrix.actualcoord[row, col])
-    
-    '''The script orthogonalizes Q_1^3 with respect to \phi_1^1 if requested.'''
+    '''The script orthogonalizes W_1^3 with respect to \phi_1^1 if requested.'''
     
     if orthogonal=='y':
         if phiunit=='y':
-            Q13NF.actualcoord = Add(Q13NF.actualcoord, Mul(-1, Q13NF.actualcoord.dot(phiNF.dummy), phiNF.dummy))
+            W13NF.actualcoord = Add(W13NF.actualcoord, Mul(-1, W13NF.actualcoord.dot(phiNF.dummy), phiNF.dummy))
         else:
-            Q13NF.actualcoord = Add(Q13NF.actualcoord, Mul(-1, Q13NF.actualcoord.dot(phiNF.dummy),
+            W13NF.actualcoord = Add(W13NF.actualcoord, Mul(-1, W13NF.actualcoord.dot(phiNF.dummy),
                                                            Pow(phiNF.dummy.dot(phiNF.dummy), -1), phiNF.dummy))
         
-    negativeRHS.actualcoord = Add(Mul(2, DS_phiQ22), TS_phiphiphi)
+    negativeRHS.actualcoord = Add(Mul(2, DS_phiW22), TS_phiphiphi)
     
-    Q33NF = linearsolver(Q33NF, negativeRHS, coefmat3) # The script finds Q_3^3
+    W33NF = linearsolver(W33NF, negativeRHS, coefmat3) # The script finds W_3^3
     
-    Q13NF_eval = evaluation_dict(Q13NF)
-    Q33NF_eval = evaluation_dict(Q33NF)
+    W13NF_eval = evaluation_dict(W13NF)
+    W33NF_eval = evaluation_dict(W33NF)
     
     print('Third-order ready')
     
     '''The code finds the fourth-order vectors.'''
         
-    DS_Q02Q02 = secondorderapplied(Q02NF, Q02NF)
-    DS_Q22Q22 = secondorderapplied(Q22NF, Q22NF)
-    DS_phiQ13 = secondorderapplied(phiNF, Q13NF)
+    DS_W02W02 = secondorderapplied(W02NF, W02NF)
+    DS_W22W22 = secondorderapplied(W22NF, W22NF)
+    DS_phiW13 = secondorderapplied(phiNF, W13NF)
     
-    DS_Q02Q22 = secondorderapplied(Q02NF, Q22NF)
-    DS_phiQ33 = secondorderapplied(phiNF, Q33NF)
+    DS_W02W22 = secondorderapplied(W02NF, W22NF)
+    DS_phiW33 = secondorderapplied(phiNF, W33NF)
     
-    TS_phiphiQ02 = thirdorderapplied(phiNF, phiNF, Q02NF)
-    TS_phiphiQ22 = thirdorderapplied(phiNF, phiNF, Q22NF)
+    TS_phiphiW02 = thirdorderapplied(phiNF, phiNF, W02NF)
+    TS_phiphiW22 = thirdorderapplied(phiNF, phiNF, W22NF)
     
     Q4S_phiphiphiphi = fourthorderapplied(phiNF, phiNF, phiNF, phiNF)
     
-    hatQ02NF = Vector('hatQ02NF')
-    hatQ02NF.dummy = Matrix(Q02NF.dummy[0:nvar-numberofzerotemporalderivatives]
+    hatW02NF = Vector('hatW02NF')
+    hatW02NF.dummy = Matrix(W02NF.dummy[0:nvar-numberofzerotemporalderivatives]
                             + [0]*numberofzerotemporalderivatives)
     
-    negativeRHS.actualcoord = Add(Mul(-2, C3, hatQ02NF.dummy), Mul(2, DS_Q02Q02),
-                                  DS_Q22Q22, Mul(2, DS_phiQ13), Mul(6, TS_phiphiQ02),
-                                  Mul(3, TS_phiphiQ22), Mul(3, Q4S_phiphiphiphi))
+    negativeRHS.actualcoord = Add(Mul(2, DS_W02W02), DS_W22W22, Mul(2, DS_phiW13), Mul(6, TS_phiphiW02),
+                                  Mul(3, TS_phiphiW22), Mul(3, Q4S_phiphiphiphi))
     
-    Q04NF = linearsolver(Q04NF, negativeRHS, coefmat0)
+    if considerC3=='y':
+        negativeRHS.actualcoord = Add(negativeRHS.actualcoord, Mul(-2, C3, hatW02NF.dummy))
     
-    hatQ22NF = Vector('hatQ22NF')
-    hatQ22NF.dummy = Matrix(Q22NF.dummy[0:nvar-numberofzerotemporalderivatives]
+    W04NF = linearsolver(W04NF, negativeRHS, coefmat0)
+    
+    hatW22NF = Vector('hatW22NF')
+    hatW22NF.dummy = Matrix(W22NF.dummy[0:nvar-numberofzerotemporalderivatives]
                             + [0]*numberofzerotemporalderivatives)
     
-    negativeRHS.actualcoord = Add(Mul(-2, C3, hatQ22NF.dummy), Mul(4, DS_Q02Q22), Mul(2, DS_phiQ13),
-                                  Mul(2, DS_phiQ33), Mul(6, TS_phiphiQ02), Mul(6, TS_phiphiQ22),
-                                  Mul(4, Q4S_phiphiphiphi))
+    negativeRHS.actualcoord = Add(Mul(4, DS_W02W22), Mul(2, DS_phiW13), Mul(2, DS_phiW33),
+                                  Mul(6, TS_phiphiW02), Mul(6, TS_phiphiW22), Mul(4, Q4S_phiphiphiphi))
     
-    Q24NF = linearsolver(Q24NF, negativeRHS, coefmat2)
+    if considerC3=='y':
+        negativeRHS.actualcoord = Add(negativeRHS.actualcoord, Mul(-2, C3, hatW22NF.dummy))
     
-    Q04NF_eval = evaluation_dict(Q04NF)
-    Q24NF_eval = evaluation_dict(Q24NF)
+    W24NF = linearsolver(W24NF, negativeRHS, coefmat2)
+    
+    W04NF_eval = evaluation_dict(W04NF)
+    W24NF_eval = evaluation_dict(W24NF)
         
     print('Fourth-order ready')
     
     '''The script computes C5.'''
     
-    DS_phiQ04 = secondorderapplied(phiNF, Q04NF)
-    DS_phiQ24 = secondorderapplied(phiNF, Q24NF)
-    DS_Q02Q13 = secondorderapplied(Q02NF, Q13NF)
-    DS_Q22Q13 = secondorderapplied(Q22NF, Q13NF)
-    DS_Q22Q33 = secondorderapplied(Q22NF, Q33NF)
+    DS_phiW04 = secondorderapplied(phiNF, W04NF)
+    DS_phiW24 = secondorderapplied(phiNF, W24NF)
+    DS_W02W13 = secondorderapplied(W02NF, W13NF)
+    DS_W22W13 = secondorderapplied(W22NF, W13NF)
+    DS_W22W33 = secondorderapplied(W22NF, W33NF)
     
-    TS_phiphiQ13 = thirdorderapplied(phiNF, phiNF, Q13NF)
-    TS_phiphiQ33 = thirdorderapplied(phiNF, phiNF, Q33NF)
-    TS_phiQ02Q02 = thirdorderapplied(phiNF, Q02NF, Q02NF)
-    TS_phiQ02Q22 = thirdorderapplied(phiNF, Q02NF, Q22NF) 
-    TS_phiQ22Q22 = thirdorderapplied(phiNF, Q22NF, Q22NF)
+    TS_phiphiW13 = thirdorderapplied(phiNF, phiNF, W13NF)
+    TS_phiphiW33 = thirdorderapplied(phiNF, phiNF, W33NF)
+    TS_phiW02W02 = thirdorderapplied(phiNF, W02NF, W02NF)
+    TS_phiW02W22 = thirdorderapplied(phiNF, W02NF, W22NF) 
+    TS_phiW22W22 = thirdorderapplied(phiNF, W22NF, W22NF)
     
-    Q4S_phiphiphiQ02 = fourthorderapplied(phiNF, phiNF, phiNF, Q02NF)
-    Q4S_phiphiphiQ22 = fourthorderapplied(phiNF, phiNF, phiNF, Q22NF)
+    Q4S_phiphiphiW02 = fourthorderapplied(phiNF, phiNF, phiNF, W02NF)
+    Q4S_phiphiphiW22 = fourthorderapplied(phiNF, phiNF, phiNF, W22NF)
     
     Q5S_phiphiphiphiphi = fifthorderapplied(phiNF, phiNF, phiNF, phiNF, phiNF)
     
-    hatQ13NF = Vector('hatQ13NF')
-    hatQ13NF.dummy = Matrix(Q13NF.dummy[0:nvar-numberofzerotemporalderivatives]
+    hatW13NF = Vector('hatW13NF')
+    hatW13NF.dummy = Matrix(W13NF.dummy[0:nvar-numberofzerotemporalderivatives]
                             + [0]*numberofzerotemporalderivatives)
 
     C5 = Mul(Pow(denominator, -1),
-             psiNF.dummy.dot(Add(Mul(-3, C3, hatQ13NF.dummy), Mul(4, DS_phiQ04), Mul(2, DS_phiQ24),
-                                 Mul(4, DS_Q02Q13), Mul(2, DS_Q22Q13), Mul(2, DS_Q22Q33),
-                                 Mul(9, TS_phiphiQ13), Mul(3, TS_phiphiQ33), Mul(12, TS_phiQ02Q02),
-                                 Mul(12, TS_phiQ02Q22), Mul(6, TS_phiQ22Q22), Mul(24, Q4S_phiphiphiQ02),
-                                 Mul(16, Q4S_phiphiphiQ22), Mul(10, Q5S_phiphiphiphiphi))))
+             psiNF.dummy.dot(Add(Mul(4, DS_phiW04), Mul(2, DS_phiW24), Mul(4, DS_W02W13),
+                                 Mul(2, DS_W22W13), Mul(2, DS_W22W33), Mul(9, TS_phiphiW13),
+                                 Mul(3, TS_phiphiW33), Mul(12, TS_phiW02W02), Mul(12, TS_phiW02W22),
+                                 Mul(6, TS_phiW22W22), Mul(24, Q4S_phiphiphiW02),
+                                 Mul(16, Q4S_phiphiphiW22), Mul(10, Q5S_phiphiphiphiphi))))
+    
+    if considerC3=='y':
+        C5 = Add(C5, Mul(Pow(denominator, -1), psiNF.dummy.dot(Mul(-3, C3, hatW13NF.dummy))))
     
     print('The calculation of the fifth-order coefficient has been carried out successfully. ' +
           'The saving process could take longer.')
     
-C3 = C3.subs(Q02NF_eval)
-C3 = C3.subs(Q22NF_eval)
+C3 = C3.subs(W02NF_eval)
+C3 = C3.subs(W22NF_eval)
 
 C3 = C3.subs(phiNF_eval)
 C3 = C3.subs(psiNF_eval)
     
-file=open('Third-order coefficient.txt','w')
+file = open('Third-order coefficient.txt','w')
 file.write(latex(C3))
 file.close()
 
@@ -728,14 +722,14 @@ if fifthcoef=='n':
     else:
         print('Everything but the fifth-order and cross-order coefficients was computed and saved.')
 if fifthcoef=='y':
-    C5 = C5.subs(Q04NF_eval)
-    C5 = C5.subs(Q24NF_eval)
+    C5 = C5.subs(W04NF_eval)
+    C5 = C5.subs(W24NF_eval)
     
-    C5 = C5.subs(Q13NF_eval)
-    C5 = C5.subs(Q33NF_eval)
+    C5 = C5.subs(W13NF_eval)
+    C5 = C5.subs(W33NF_eval)
     
-    C5 = C5.subs(Q02NF_eval)
-    C5 = C5.subs(Q22NF_eval)
+    C5 = C5.subs(W02NF_eval)
+    C5 = C5.subs(W22NF_eval)
     
     C5 = C5.subs(phiNF_eval)
     C5 = C5.subs(psiNF_eval)
@@ -746,7 +740,46 @@ if fifthcoef=='y':
     
     print('The fifth-order coefficient was computed and saved into a text file.')
     
-file=open('Find codimension-two bifurcation points.txt','w')
+if alphaval=='y' and fifthcoeff=='y':
+    W123NF = Vector('W123^NF')
+    W024NF = Vector('W024^NF')
+    W224NF = Vector('W224^NF')
+    
+    negativeRHS.actualcoord = Mul(2, sqrt(muNF), diffmatrix, phiNF.dummy)
+    
+    '''The script finds W_{1,2}^3 using an analogous approach to the one used to find \phi_1^1.'''
+    
+    W123NF = critical_linearsolver(W123NF, negativeRHS, criticalcol, coefsubmatrix, submatrixrows, submatrixcols)
+    
+    DS_phiW123 = secondorderapplied(phiNF, W123NF)
+    
+    negativeRHS.actualcoord = Mul(2, DS_phiW123)
+    
+    W024NF = linearsolver(W024NF, negativeRHS, coefmat0)
+    
+    negativeRHS.actualcoord = Add(Mul(2, DS_phiW123), Mul(8, sqrt(muNF), W22NF.dummy))
+    
+    W224 = linearsolver(W224NF, negativeRHS, coefmat2)
+    
+    DS_phiW024 = secondorderapplied(phiNF, W024NF)
+    DS_phiW224 = secondorderapplied(phiNF, W224NF)
+    DS_W02W123 = secondorderapplied(W02NF, W123NF)
+    
+    DS_W22W123 = secondorderapplied(W22NF, W123NF)
+    
+    TS_phiphiW123 = thirdorderapplied(phiNF, phiNF, W123NF)
+    
+    alpha1 = Mul(- 2, sqrt(muNF), Pow(denominator, -1), psiNF.dummy.dot(Mul(diffmatrix, W123NF.dummy)))
+    
+    alpha2 = Mul(2, Pow(denominator, -1), psiNF.dummy.dot(Add(DS_phiW024, DS_phiW224,
+                                                              Mul(2, DS_W02W123), Mul(3, TS_phiphiW123),
+                                                              Mul(2, sqrt(muNF), diffmatrix, W13NF.dummy))))
+    
+    alpha3 = Mul(Pow(denominator, -1), psiNF.dummy.dot(Add(Mul(- 2, DS_phiW024),
+                                                          Mul(- 2, DS_W22W123), Mul(- 3, TS_phiphiW123),
+                                                          Mul(2, sqrt(muNF), diffmatrix, W13NF.dummy))))
+    
+file = open('Find codimension-two bifurcation points.txt','w')
 try:
     cod2
     file.write(str(cod2))
@@ -766,7 +799,7 @@ if plot2d=='y':
         exit()
 
     try:
-        file=open('Initial conditions for Turing bifurcation curves.txt','w')
+        file = open('Initial conditions for Turing bifurcation curves.txt','w')
         
         for key in lines_to_search.keys():
             if isinstance(lines_to_search[key],list):
@@ -792,7 +825,7 @@ if plot2d=='y':
     except:
         parameter_functions=dict()
     
-    file=open('Fixed parameter values.txt','w')
+    file = open('Fixed parameter values.txt', 'w')
     for key in parameters.keys():
         if key not in parameters_on_axes:
             if key not in parameter_functions.keys():
@@ -802,7 +835,7 @@ if plot2d=='y':
             
     file.close()
         
-    file=open('Parameters on axes.txt','w')
+    file = open('Parameters on axes.txt', 'w')
     file.write(latex(parameters_on_axes[0]) + ',' + latex(intervalx[0]) + ',' + latex(intervalx[1]) + '\n')
     file.write(latex(parameters_on_axes[1]) + ',' + latex(intervaly[0]) + ',' + latex(intervaly[1]) + '\n')
     file.close()
@@ -812,11 +845,11 @@ if plot2d=='y':
             for parnum in range(2):
                 names_of_parameters[parnum] = latex(parameters_on_axes[parnum])
     except:
-        names_of_parameters=parameters_on_axes
+        names_of_parameters = parameters_on_axes
         for parnum in range(2):
             names_of_parameters[parnum] = latex(names_of_parameters[parnum])
         
-    file=open('Actual names of parameters.txt','w')
+    file = open('Actual names of parameters.txt','w')
     file.write(names_of_parameters[0] + ',' + names_of_parameters[1])
     file.close()
     
@@ -854,7 +887,7 @@ if plot2d=='y' and plot3d=='y':
             counter+= 1
     
     try:
-        file=open('Extra Turing curves in codimension-two bifurcation diagram.txt','w')
+        file = open('Extra Turing curves in codimension-two bifurcation diagram.txt','w')
         for parnum in range(len(extraturing)):
             file.write(latex(extraturing[parnum]) + '\n')
         file.close()
