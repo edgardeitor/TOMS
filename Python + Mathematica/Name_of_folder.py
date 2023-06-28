@@ -25,10 +25,6 @@ crosscoef='n' '''This variable must be equal to either 'y' or 'n', depending on 
               a parameter with respect to which you would like to compute the coefficient and an
               expression of the equilibrium below, At least depending on the parameter you are to
               compute the cross-order coefficient with respect to.'''
-              
-numberofzerotemporalderivatives=0 '''This variable must be equal to the number of temporal derivatives that are
-                                  equal to zero in your equation. These equations are just to define higher-order
-                                  spatial derivatives as explained in the document.'''
              
 numberofzerotemporalderivatives=0 '''This variable represents the number of time derivatives that are
                                     equal to zero in the equation. These equations must be placed at the end

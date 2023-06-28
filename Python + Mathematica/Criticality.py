@@ -222,169 +222,33 @@ matrix at the parameters provided.'''
 if eq!=[]:
     for varnum in range(nvar):
         try:
-            determinanteval=determinanteval.subs(var[varnum], eq[varnum])
-            derivativeeval=derivativeeval.subs(var[varnum], eq[varnum])
+            determinanteval = determinanteval.subs(var[varnum], eq[varnum])
+            derivativeeval = derivativeeval.subs(var[varnum], eq[varnum])
         except:
-            determinanteval=determinanteval.subs(var[varnum], eq[var[varnum]])
-            derivativeeval=derivativeeval.subs(var[varnum], eq[var[varnum]])
+            determinanteval = determinanteval.subs(var[varnum], eq[var[varnum]])
+            derivativeeval = derivativeeval.subs(var[varnum], eq[var[varnum]])
     determinanteval = determinanteval.subs(parameters)
     derivativeeval = derivativeeval.subs(parameters)
     getout = 0
+    ksquared = nan
     
-    '''It tries to check whether there is a value of \mu that solves both equations
-    that define the Turing bifurcation at the same time.'''
+    '''It checks whether there is a value of \mu that solves both equations
+    that define the Turing bifurcation at the same time. If not, it sets a
+    value of k=1 to continue the calculation'''
     
     try:
-        mucritical = solve(derivativeeval,muNF)
+        mucritical = solve(derivativeeval, muNF)
         for muvalue in mucritical:
             muvalue = complex(muvalue).real
-            if abs(N(determinanteval.subs(muNF,muvalue)))<5*tol:
+            if abs(N(determinanteval.subs(muNF, muvalue)))<5*tol:
                 ksquared = muvalue
                 getout = 1
                 break
+            if muvalue==mucritical[-1]:
+                print('There is no Turing bifurcation for the parameter values you provided. ' +
+                      'The calculation will be carried out symbolically.')
     except:
         pass
-    
-    '''If there is no Turing bifurcation, the script asks you to provide a parameter that can be
-    changed in order to find the bifurcation.'''
-    
-    if getout==0:
-        determinanteval = jacobianmatdet
-        derivativeeval = determinantderivative
-        print('There is no Turing bifurcation for the parameters provided.')
-        print('The parameters of the system are:')
-        for key in parameters.keys():
-            print(key)
-        parametertochange=input('Enter a parameter that can be changed in order to find the wavenumber ' +
-                                '(Enter 0 if you do not want Python to find the bifurcation condition): ')
-        counter = 0
-        while True:
-            
-            '''The script checks whether the equations change after changing the parameter provided.'''
-            
-            try:
-                if parametertochange=='0':
-                    ksquared = 0
-                    getout = 1
-                    break
-                if counter==1:
-                    parametertochange = input('Enter a parameter that can be changed in order to find the wavenumber ' +
-                                              '(Enter 0 if you do not want Python to find the bifurcation condition): ')
-                parametertochange = eval(parametertochange)
-                if parametertochange not in parameters.keys():
-                    print('You did not enter a parameter of the system.')
-                    continue
-                else:
-                    if (determinanteval==determinanteval.subs(parametertochange,parameters[parametertochange])
-                        and derivativeeval==derivativeeval.subs(parametertochange,parameters[parametertochange])):
-                            print('Your parameter does not produce any changes in the ' +
-                                  'equations for the Turing bifurcation.')
-                            continue
-                break
-            except:
-                counter = 1
-                
-        if getout==0:
-            kineticsevaluated = kinetics
-            
-            '''The script evaluates the kinetics to find the new equilibrium.'''
-            
-            for key in parameters:
-                if key!=parametertochange:
-                    kineticsevaluated = kineticsevaluated.subs(key, parameters[key])
-                    determinanteval = determinanteval.subs(key, parameters[key])
-                    derivativeeval = derivativeeval.subs(key, parameters[key])
-                else:
-                    initialpartochange = parameters[key]
-            initialeq = eq
-            eq = solve(kineticsevaluated, var)[eqnumber]
-            for varnum in range(nvar):
-                determinanteval = determinanteval.subs(var[varnum], eq[varnum])
-                derivativeeval = derivativeeval.subs(var[varnum], eq[varnum])
-                
-            '''The script tries to find a solution to both equations numerically starting from \mu=1
-            and the parameter value provided previously.'''
-                
-            try:
-                zerofunction = [lambda mutofind, parametertofind:
-                                determinanteval.subs([(muNF, mutofind), (parametertochange, parametertofind)]),
-                                lambda mutofind, parametertofind:
-                                    derivativeeval.subs([(muNF, mutofind), (parametertochange, parametertofind)])]
-                [muvalue, newparval] = findroot(zerofunction, (1, initialpartochange))
-                muvalue = complex(muvalue).real
-                newparval = complex(newparval).real
-                if (abs(simplify(determinanteval.subs([(muNF, muvalue), (parametertochange, newparval)])))<tol
-                    and abs(simplify(derivativeeval.subs([(muNF, muvalue), (parametertochange, newparval)])))<tol):
-                    ksquared = muvalue
-                    parameters[parametertochange] = newparval
-                    print('The Turing bifurcation was found for ' + str(parametertochange) + '=' + str(newparval))
-                    getout = 1
-            except:
-                pass
-        if getout==0:
-            
-            '''The script tries to find the solution by first solving one equation to get \mu
-            in terms of the parameter and then solves the other equation to find it.'''
-            
-            try:
-                mucritical = solve(derivativeeval, muNF)
-                for muvalue in mucritical:
-                    try:
-                        newparval = float(findroot(lambda parametertofind:
-                                                   determinanteval.subs([(muNF, muvalue),
-                                                                         (parametertochange, parametertofind)]),
-                                                   initialpartochange))
-                        muvalue = complex(simplify(muvalue.subs(parametertochange, newparval))).real
-                        newparval = complex(newparval).real
-                        if simplify(determinanteval.subs([(muNF, muvalue), (parametertochange, newparval)]))<tol:
-                            ksquared = muvalue
-                            parameters[parametertochange] = newparval
-                            print('The Turing bifurcation was found for ' + str(parametertochange) + '='
-                                  + str(newparval))
-                            getout = 1
-                            break
-                    except:
-                        continue
-            except:
-                pass
-            
-        if getout==0:
-            
-            '''The script finds the resultant between the functions that define the equations and then it finds the
-            value of the parameter by solving resultant=0 with the value provided preiously as an
-            initial ondition.'''
-            
-            try:
-                intersection = resultant(determinanteval, derivativeeval, muNF)
-                newparval = float(findroot(lambda parametertofind:
-                                         intersection.subs(parametertochange,parametertofind),initialpartochange))
-                mucritical = solve(derivativeeval.subs(parametertochange,newparval),muNF)
-                newparval = complex(newparval).real
-                for muvalue in mucritical:
-                    muvalue = complex(muvalue).real
-                    if abs(simplify(determinanteval.subs([(muNF,muvalue),(parametertochange,newparval)])))<tol:
-                        ksquared = muvalue
-                        parameters[parametertochange] = newparval
-                        print('The Turing bifurcation was found for ' + str(parametertochange) + '=' + str(newparval))
-                        getout=1
-                        break
-            except:
-                pass
-            
-            '''If none of the previous methods worked, then the code will ask you to provide a wavenumber.'''
-            
-        if getout==0:
-            eq = initialeq
-            kval = input('This script could not find the value of k. ' +
-                         'Make sure that you have a Turing bifurcation for the parameter values provided. ' +
-                         'If you are at a Turing bifurcation. Enter a value of k you want to consider: ')
-            while not isfloat(kval):
-                kval = input('What you entered before is not a number. ' +
-                             'Enter a value of k you want to consider: ')
-            kval = eval(kval)
-            ksquared = Pow(kval, 2)
-else:
-    ksquared = 0
     
 '''The script saves the functions to find a bifurcation into text files.'''
     
@@ -394,7 +258,7 @@ file.close()
 file = open('Derivative of the Determinant.txt', 'w')
 file.write(latex(determinantderivative))
 file.close()
-file = open("Non-zero variable.txt",'w')
+file = open("Non-zero variable.txt", 'w')
 file.write(latex(nonzero))
 file.close()
 
@@ -443,11 +307,11 @@ W33NF = Vector('W33^NF')
 W04NF = Vector('W04^NF')
 W24NF = Vector('W24^NF')
 
-getout=0
+getout = 0
 
 '''The script looks for an invertible (n-1) x (n-1) submatrix of the Jacobian matrix of the system.'''
 
-if eq!=[]:
+if eq!=[] and ksquared!=nan:
     for row in range(nvar):
         for col in range(nvar):
             submatrixrows = list(range(nvar))
@@ -465,7 +329,7 @@ if eq!=[]:
                     phiNF.actualcoord[col] = 1
                     criticalrow = row
                     criticalcol = col
-                    getout=1
+                    getout = 1
                     break
             else:
                 phiNF.actualcoord[0] = 1
@@ -479,7 +343,8 @@ else:
     submatrixcols = list(range(nvar))
     submatrixrows.remove(0)
     submatrixcols.remove(0)
-    invertiblesubmatrix=coefmat1.actualcoord.extract(submatrixrows,submatrixcols)
+    invertiblesubmatrix=coefmat1.actualcoord.extract(submatrixrows, submatrixcols)
+    phiNF.actualcoord[0] = 1
     criticalrow = 0
     criticalcol = 0
     
@@ -740,7 +605,7 @@ if fifthcoef=='y':
     
     print('The fifth-order coefficient was computed and saved into a text file.')
     
-if alphaval=='y' and fifthcoeff=='y':
+if alphaval=='y' and fifthcoef=='y':
     W123NF = Vector('W123^NF')
     W024NF = Vector('W024^NF')
     W224NF = Vector('W224^NF')
@@ -761,6 +626,10 @@ if alphaval=='y' and fifthcoeff=='y':
     
     W224 = linearsolver(W224NF, negativeRHS, coefmat2)
     
+    W123NF_eval = evaluation_dict(W123NF)
+    W024NF_eval = evaluation_dict(W024NF)
+    W224NF_eval = evaluation_dict(W224NF)
+    
     DS_phiW024 = secondorderapplied(phiNF, W024NF)
     DS_phiW224 = secondorderapplied(phiNF, W224NF)
     DS_W02W123 = secondorderapplied(W02NF, W123NF)
@@ -778,6 +647,39 @@ if alphaval=='y' and fifthcoeff=='y':
     alpha3 = Mul(Pow(denominator, -1), psiNF.dummy.dot(Add(Mul(- 2, DS_phiW024),
                                                           Mul(- 2, DS_W22W123), Mul(- 3, TS_phiphiW123),
                                                           Mul(2, sqrt(muNF), diffmatrix, W13NF.dummy))))
+    
+    alpha1 = alpha1.subs(W123NF_eval)
+    alpha1 = alpha1.subs(phiNF_eval)
+    alpha1 = alpha1.subs(psiNF_eval)
+    
+    alpha2 = alpha2.subs(W024NF_eval)
+    alpha2 = alpha2.subs(W224NF_eval)
+    alpha2 = alpha2.subs(W13NF_eval)
+    alpha2 = alpha2.subs(W123NF_eval)
+    alpha2 = alpha2.subs(W02NF_eval)
+    alpha2 = alpha2.subs(W22NF_eval)
+    alpha2 = alpha2.subs(phiNF_eval)
+    alpha2 = alpha2.subs(psiNF_eval)
+    
+    alpha3 = alpha3.subs(W024NF_eval)
+    alpha3 = alpha3.subs(W13NF_eval)
+    alpha3 = alpha3.subs(W123NF_eval)
+    alpha3 = alpha3.subs(W02NF_eval)
+    alpha3 = alpha3.subs(W22NF_eval)
+    alpha3 = alpha3.subs(phiNF_eval)
+    alpha3 = alpha3.subs(psiNF_eval)
+    
+    file = open('alpha1.txt', 'w')
+    file.write(latex(alpha1))
+    file.close()
+    
+    file = open('alpha2.txt', 'w')
+    file.write(latex(alpha2))
+    file.close()
+    
+    file = open('alpha3.txt', 'w')
+    file.write(latex(alpha3))
+    file.close()
     
 file = open('Find codimension-two bifurcation points.txt','w')
 try:

@@ -31,9 +31,13 @@ equilibrium=[]
 
 fifthcoef='y'
 
+considerC3='n'
+
 orthogonal='n'
 
 cod2='y'
+
+alphaval='y'
 
 plot2d='y'
 
