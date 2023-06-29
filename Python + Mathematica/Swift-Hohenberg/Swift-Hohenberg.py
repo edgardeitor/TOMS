@@ -35,7 +35,7 @@ orthogonal='n'
 
 cod2='n'
 
-alphaval='y'
+alphaval='n'
 
 plot2d='n'
 
