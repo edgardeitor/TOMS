@@ -622,7 +622,7 @@ if alphaval=='y' and fifthcoef=='y':
     
     W024NF = linearsolver(W024NF, negativeRHS, coefmat0)
     
-    negativeRHS.actualcoord = Add(Mul(2, DS_phiW123), Mul(8, sqrt(muNF), W22NF.dummy))
+    negativeRHS.actualcoord = Add(Mul(2, DS_phiW123), Mul(8, sqrt(muNF), diffmatrix, W22NF.dummy))
     
     W224 = linearsolver(W224NF, negativeRHS, coefmat2)
     
