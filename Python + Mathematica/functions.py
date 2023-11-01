@@ -29,18 +29,6 @@ def isfloat(value):
       return True
     except:
       return False
-                    
-def crossorderapplied(u,parameter,equilibrium):
-    '''This function is a coded version of F_{1,1}'''
-    SS = zeros(nvar,1)
-    firstordereval = firstorderderivatives
-    for counter1 in range(nvar):
-        for counter2 in range(nvar):
-            firstordereval[counter1] = Matrix(firstordereval[counter1]).subs(var[counter2], equilibrium[counter2])
-    for counter1 in range(nvar):
-        SS = Add(SS, Mul(u.dummy[counter1], \
-                         diff(firstordereval[counter1],parameter)))
-    return SS
     
 def secondorderapplied(u, v):
     '''This function is a coded version of F_2'''

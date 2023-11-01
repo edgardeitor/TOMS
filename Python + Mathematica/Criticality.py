@@ -438,27 +438,31 @@ C3 = Mul(Pow(denominator, -1), psiNF.dummy.dot(Add(Mul(4, DS_phiW02), Mul(2, DS_
 '''The script gets the cross-order coefficient if requested.'''
 
 if crosscoef=='y':
-    try:
-        for varnum in range(nvar):
-            equilibrium[varnum] = eval(equilibrium[varnum])
-            
+    try:            
         crosspar = eval(crosspar)
-            
-        SS_phi = crossorderapplied(phiNF, crosspar, equilibrium)
         
-        C11 = Mul(Pow(hatphiNF.dummy.dot(psiNF.dummy),-1),
-                  psiNF.dummy.dot(Add(SS_phi, Mul(-1, muNF, diff(diffmatrix, crosspar), phiNF.dummy))))
+        pre_C11 = Mul(Pow(hatphiNF.dummy.dot(psiNF.dummy), -1),
+                  psiNF.dummy.dot(Mul(Add(jacobianmat, Mul(-1, muNF, diffmatrix)), phiNF.dummy)))
         
+        file = open('Kernels.txt', 'w')
         for varnum in range(nvar):
-            C11 = C11.subs(phiNF.dummy[varnum], phiNF.actualcoord[varnum])
-            C11 = C11.subs(psiNF.dummy[varnum], psiNF.actualcoord[varnum])
+            if varnum<nvar - 1:
+                file.write(latex(phiNF.actualcoord[varnum]) + ',')
+            else:
+                file.write(latex(phiNF.actualcoord[varnum]) + '\n')
+        for varnum in range(nvar):
+            if varnum<nvar - 1:
+                file.write(latex(psiNF.actualcoord[varnum]) + ',')
+            else:
+                file.write(latex(psiNF.actualcoord[varnum]))
+        file.close()
         
-        file = open('Cross-order coefficient.txt','w')        
-        file.write(latex(C11))
+        file = open('To get cross-order coefficient.txt', 'w')
+        file.write(latex(crosspar) + '\n')
+        file.write(latex(pre_C11))
         file.close()
     except:
-        print('The equilibrium you introduced is not defined in terms of the parameters of the system' +
-              'or the parameter crosspar is not a parameter of the system.')
+        print('The parameter crosspar is not a parameter of the system.')
 
 '''The script continues with the following orders to find C5 if requested.'''
 

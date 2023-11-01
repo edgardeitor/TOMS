@@ -33,9 +33,6 @@ numberofzerotemporalderivatives=0 '''This variable represents the number of time
 crosspar='' '''This variable is a string that must have the name of the cross-order parameter if you want
                to compute the cross-order coeffiient.'''
 
-equilibrium=[] '''This is the expression of the equilibrium of the system at least in terms of the
-                  parameter you are considering to compute the cross-order coefficient. '''
-
 fifthcoef='n' '''This variable must be equal to either 'y' or 'n', depending on whether you would like
               to get the expression of the fifth-order coefficient, respecively. If your system is large,
               the proess of obtaining this in terms of dummy variables could be quick but the saving

@@ -35,8 +35,6 @@ numberofzerotemporalderivatives=0
 
 crosspar=''
 
-equilibrium=[]
-
 fifthcoef='n'
 
 considerC3='n'
