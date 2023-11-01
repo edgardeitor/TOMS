@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[    270739,       5994]
-NotebookOptionsPosition[    266359,       5915]
-NotebookOutlinePosition[    266888,       5934]
-CellTagsIndexPosition[    266845,       5931]
+NotebookDataLength[    275131,       6105]
+NotebookOptionsPosition[    270432,       6021]
+NotebookOutlinePosition[    270957,       6040]
+CellTagsIndexPosition[    270914,       6037]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -2402,6 +2402,112 @@ search.\>\"", "}"}], "]"}], ",", "\"\<Output\>\""}], "]"}]}], "]"}]}]}],
    3.8968897988290396`*^9}, {3.8968899291864944`*^9, 
    3.896889937334505*^9}},ExpressionUUID->"9919ef6e-2978-4802-bd05-\
 8061f7920bda"]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell["Cross-order coefficient", "Title",
+ CellChangeTimes->{{3.907871314955657*^9, 
+  3.90787132004045*^9}},ExpressionUUID->"4684d111-706c-433d-8a4b-\
+d34dca57b6d5"],
+
+Cell["\<\
+This cell computes the cross-order coefficient, provided that all the \
+parameters were appropriately given in Python.\
+\>", "Text",
+ CellChangeTimes->{{3.9078715444534855`*^9, 3.9078715788140516`*^9}, {
+  3.907871613616828*^9, 
+  3.9078716459262676`*^9}},ExpressionUUID->"c28fe9c7-075c-4be0-a77a-\
+35b2a8d3cfa8"],
+
+Cell[BoxData[
+ RowBox[{"If", "[", 
+  RowBox[{
+   RowBox[{
+    RowBox[{
+    "FileExistsQ", "[", "\"\<To get cross-order coefficient.txt\>\"", "]"}], 
+    " ", "&&", " ", 
+    RowBox[{"FileExistsQ", "[", "\"\<Kernels.txt\>\"", "]"}]}], ",", 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+    "Throw", "[", "\"\<The cross-order coefficient will not be computed\>\"", 
+     "]"}], ";"}], "\[IndentingNewLine]", ",", "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"For", "[", 
+     RowBox[{
+      RowBox[{"counter", "=", "1"}], ",", 
+      RowBox[{"counter", "<=", "2"}], ",", 
+      RowBox[{"counter", "++"}], ",", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"aux", "=", 
+        RowBox[{
+        "ReadLine", "[", "\"\<To get cross-order coefficient.txt\>\"", 
+         "]"}]}], ";", "\[IndentingNewLine]", 
+       RowBox[{"aux2", "=", 
+        RowBox[{"ReadLine", "[", "\"\<Kernels.txt\>\"", "]"}]}], ";", 
+       "\[IndentingNewLine]", 
+       RowBox[{"If", "[", 
+        RowBox[{
+         RowBox[{"counter", "==", "1"}], ",", "\[IndentingNewLine]", 
+         RowBox[{
+          RowBox[{"crosspar", "=", 
+           RowBox[{"FormattingStrings", "[", "aux", "]"}]}], ";", 
+          "\[IndentingNewLine]", 
+          RowBox[{"phiNF", "=", 
+           RowBox[{"FormattingStringsCommaSplit", "[", "aux2", "]"}]}], ";"}],
+          "\[IndentingNewLine]", ",", "\[IndentingNewLine]", 
+         RowBox[{
+          RowBox[{"C11", "=", 
+           RowBox[{"FormattingStrings", "[", "aux", "]"}]}], ";", 
+          "\[IndentingNewLine]", 
+          RowBox[{"psiNF", "=", 
+           RowBox[{"FormattingStringsCommaSplit", "[", "aux2", "]"}]}], 
+          ";"}]}], "\[IndentingNewLine]", "]"}]}]}], "\[IndentingNewLine]", 
+     "]"}], ";", "\[IndentingNewLine]", 
+    RowBox[{"Close", "[", "\"\<To get cross-order coefficient.txt\>\"", "]"}],
+     ";", "\[IndentingNewLine]", 
+    RowBox[{"Close", "[", "\"\<Kernels.txt\>\"", "]"}], ";", 
+    "\[IndentingNewLine]", 
+    RowBox[{"phiNF", "=", 
+     RowBox[{"ToExpression", "[", 
+      RowBox[{"phiNF", ",", "TeXForm"}], "]"}]}], ";", "\[IndentingNewLine]", 
+    RowBox[{"psiNF", "=", 
+     RowBox[{"ToExpression", "[", 
+      RowBox[{"psiNF", ",", "TeXForm"}], "]"}]}], ";", "\[IndentingNewLine]", 
+    RowBox[{"C11", "=", 
+     RowBox[{"C11", "/.", "eq"}]}], ";", "\[IndentingNewLine]", 
+    RowBox[{"C11", "=", 
+     RowBox[{"D", "[", 
+      RowBox[{"C11", ",", "crosspar"}], "]"}]}], ";", "\[IndentingNewLine]", 
+    RowBox[{"For", "[", 
+     RowBox[{
+      RowBox[{"varnum", "=", "0"}], ",", 
+      RowBox[{"varnum", "<=", 
+       RowBox[{"nvar", "-", "1"}]}], ",", 
+      RowBox[{"varnum", "++"}], ",", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"C11", "=", 
+        RowBox[{"C11", "/.", 
+         RowBox[{
+          SuperscriptBox[
+           SubscriptBox["\[Phi]", "varnum"], "NF"], "->", 
+          RowBox[{"phiNF", "[", 
+           RowBox[{"[", 
+            RowBox[{"varnum", "+", "1"}], "]"}], "]"}]}]}]}], ";", 
+       "\[IndentingNewLine]", 
+       RowBox[{"C11", "=", 
+        RowBox[{"C11", "/.", 
+         RowBox[{
+          SuperscriptBox[
+           SubscriptBox["\[Psi]", "varnum"], "NF"], "->", 
+          RowBox[{"psiNF", "[", 
+           RowBox[{"[", 
+            RowBox[{"varnum", "+", "1"}], "]"}], "]"}]}]}]}], ";"}]}], 
+     "\[IndentingNewLine]", "]"}]}]}], "\[IndentingNewLine]", "]"}]], "Input",
+ CellChangeTimes->{{3.9078713969204855`*^9, 3.9078714990486465`*^9}, 
+   3.907871583271462*^9},ExpressionUUID->"e502312f-1ef8-470b-9311-\
+ad61bfb6028a"]
 }, Closed]],
 
 Cell[CellGroupData[{
@@ -5918,7 +6024,7 @@ WindowMargins->{{-6, Automatic}, {Automatic, 0}},
 TaggingRules->{
  "WelcomeScreenSettings" -> {"FEStarting" -> False}, "TryRealOnly" -> False},
 Magnification:>1.4 Inherited,
-FrontEndVersion->"13.2 for Microsoft Windows (64-bit) (January 30, 2023)",
+FrontEndVersion->"13.3 for Microsoft Windows (64-bit) (June 3, 2023)",
 StyleDefinitions->"Default.nb",
 ExpressionUUID->"fedd186e-0433-4b8f-bc48-17a0a3d40abe"
 ]
@@ -5961,39 +6067,44 @@ Cell[31902, 772, 5464, 127, 786, "Input",ExpressionUUID->"47f29af5-90a6-416b-851
 Cell[CellGroupData[{
 Cell[37403, 904, 413, 6, 98, "Title",ExpressionUUID->"ea7c5508-ed79-43b1-a153-1c2fd0b76f5b"],
 Cell[37819, 912, 1024, 16, 172, "Text",ExpressionUUID->"5fec1db2-68c6-4b57-89c4-f85a05da35a1"],
-Cell[38846, 930, 68394, 1473, 4013, "Input",ExpressionUUID->"9919ef6e-2978-4802-bd05-8061f7920bda"]
+Cell[38846, 930, 68394, 1473, 4010, "Input",ExpressionUUID->"9919ef6e-2978-4802-bd05-8061f7920bda"]
 }, Closed]],
 Cell[CellGroupData[{
-Cell[107277, 2408, 378, 5, 98, "Title",ExpressionUUID->"741eb1d1-ecb6-4601-bec9-e01c0e2cd7d8"],
-Cell[107658, 2415, 1061, 26, 110, "Text",ExpressionUUID->"4471743e-7c28-41e1-9073-41bf3f51418a"],
-Cell[108722, 2443, 39911, 774, 2422, "Input",ExpressionUUID->"fb8b154a-015f-45ba-964e-1aa654390a6e"]
+Cell[107277, 2408, 165, 3, 98, "Title",ExpressionUUID->"4684d111-706c-433d-8a4b-d34dca57b6d5"],
+Cell[107445, 2413, 323, 7, 48, "Text",ExpressionUUID->"c28fe9c7-075c-4be0-a77a-35b2a8d3cfa8"],
+Cell[107771, 2422, 3542, 87, 694, "Input",ExpressionUUID->"e502312f-1ef8-470b-9311-ad61bfb6028a"]
 }, Closed]],
 Cell[CellGroupData[{
-Cell[148670, 3222, 270, 4, 98, "Title",ExpressionUUID->"335983e1-ddfc-4628-a13f-400ae567ecbb"],
-Cell[148943, 3228, 1234, 31, 141, "Text",ExpressionUUID->"c3a28e72-11cc-4488-b25f-12fc8d97dce5"],
-Cell[150180, 3261, 29766, 596, 1452, "Input",ExpressionUUID->"7f0bdfc8-c8b7-4f06-9635-3f6fa686187c"]
+Cell[111350, 2514, 378, 5, 98, "Title",ExpressionUUID->"741eb1d1-ecb6-4601-bec9-e01c0e2cd7d8"],
+Cell[111731, 2521, 1061, 26, 110, "Text",ExpressionUUID->"4471743e-7c28-41e1-9073-41bf3f51418a"],
+Cell[112795, 2549, 39911, 774, 2421, "Input",ExpressionUUID->"fb8b154a-015f-45ba-964e-1aa654390a6e"]
 }, Closed]],
 Cell[CellGroupData[{
-Cell[179983, 3862, 426, 7, 183, "Title",ExpressionUUID->"22396d79-1554-4bd1-b57b-3637995f26e1"],
-Cell[180412, 3871, 210, 6, 48, "Text",ExpressionUUID->"1d798801-9506-4883-bd0a-503a8c94ea1e"],
-Cell[180625, 3879, 8745, 203, 1425, "Input",ExpressionUUID->"8e231fa1-823f-4b7e-9741-54fb6726aef5"]
+Cell[152743, 3328, 270, 4, 98, "Title",ExpressionUUID->"335983e1-ddfc-4628-a13f-400ae567ecbb"],
+Cell[153016, 3334, 1234, 31, 141, "Text",ExpressionUUID->"c3a28e72-11cc-4488-b25f-12fc8d97dce5"],
+Cell[154253, 3367, 29766, 596, 1452, "Input",ExpressionUUID->"7f0bdfc8-c8b7-4f06-9635-3f6fa686187c"]
 }, Closed]],
 Cell[CellGroupData[{
-Cell[189407, 4087, 228, 4, 98, "Title",ExpressionUUID->"721b3d26-65f5-48dc-83bc-d60458e19cf1"],
-Cell[189638, 4093, 690, 15, 110, "Text",ExpressionUUID->"4e47a1b0-2e23-44ed-9899-bb6d3e49b736"],
-Cell[190331, 4110, 22304, 546, 2155, "Input",ExpressionUUID->"b8150510-4aa6-4710-af7d-a3857f48b73d"]
+Cell[184056, 3968, 426, 7, 183, "Title",ExpressionUUID->"22396d79-1554-4bd1-b57b-3637995f26e1"],
+Cell[184485, 3977, 210, 6, 48, "Text",ExpressionUUID->"1d798801-9506-4883-bd0a-503a8c94ea1e"],
+Cell[184698, 3985, 8745, 203, 1425, "Input",ExpressionUUID->"8e231fa1-823f-4b7e-9741-54fb6726aef5"]
 }, Closed]],
 Cell[CellGroupData[{
-Cell[212672, 4661, 227, 4, 98, "Title",ExpressionUUID->"93eb3777-1d8e-484c-a587-8a12b89e2186"],
-Cell[212902, 4667, 406, 8, 79, "Text",ExpressionUUID->"21bfde7a-2c5c-4a92-a9b1-7fda07677624"],
-Cell[213311, 4677, 22991, 544, 2275, "Input",ExpressionUUID->"b5767154-72ac-4193-ae3b-769f8643c433"]
+Cell[193480, 4193, 228, 4, 98, "Title",ExpressionUUID->"721b3d26-65f5-48dc-83bc-d60458e19cf1"],
+Cell[193711, 4199, 690, 15, 110, "Text",ExpressionUUID->"4e47a1b0-2e23-44ed-9899-bb6d3e49b736"],
+Cell[194404, 4216, 22304, 546, 2155, "Input",ExpressionUUID->"b8150510-4aa6-4710-af7d-a3857f48b73d"]
 }, Closed]],
 Cell[CellGroupData[{
-Cell[236339, 5226, 398, 6, 98, "Title",ExpressionUUID->"5fc239ca-55da-4460-b950-7fe88eed2c81"],
-Cell[236740, 5234, 556, 9, 110, "Text",ExpressionUUID->"bcdfdd1b-45dc-4092-8222-9834319362c1"],
+Cell[216745, 4767, 227, 4, 98, "Title",ExpressionUUID->"93eb3777-1d8e-484c-a587-8a12b89e2186"],
+Cell[216975, 4773, 406, 8, 79, "Text",ExpressionUUID->"21bfde7a-2c5c-4a92-a9b1-7fda07677624"],
+Cell[217384, 4783, 22991, 544, 2275, "Input",ExpressionUUID->"b5767154-72ac-4193-ae3b-769f8643c433"]
+}, Closed]],
 Cell[CellGroupData[{
-Cell[237321, 5247, 28327, 653, 1905, "Input",ExpressionUUID->"12e3224d-85ea-4077-a7a5-67b3f4f96a04"],
-Cell[265651, 5902, 680, 9, 45, "Output",ExpressionUUID->"ecd28ce9-2417-42f6-a1e6-5f01a60374d6"]
+Cell[240412, 5332, 398, 6, 98, "Title",ExpressionUUID->"5fc239ca-55da-4460-b950-7fe88eed2c81"],
+Cell[240813, 5340, 556, 9, 110, "Text",ExpressionUUID->"bcdfdd1b-45dc-4092-8222-9834319362c1"],
+Cell[CellGroupData[{
+Cell[241394, 5353, 28327, 653, 1905, "Input",ExpressionUUID->"12e3224d-85ea-4077-a7a5-67b3f4f96a04"],
+Cell[269724, 6008, 680, 9, 45, "Output",ExpressionUUID->"ecd28ce9-2417-42f6-a1e6-5f01a60374d6"]
 }, Closed]]
 }, Closed]]
 }
