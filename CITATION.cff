@@ -1,0 +1,18 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: Criticality of a Turing bifurcation
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Edgardo
+    family-names: Villar-Sepúlveda
+    email: edgardo.villar-sepulveda@bristol.ac.uk
+    affiliation: University of Bristol
+    orcid: 'https://orcid.org/0000-0001-5836-7372'
+repository-code: 'https://github.com/edgardeitor/TOMS'
+keywords:
+  - 'turing bifurcation, criticality'
