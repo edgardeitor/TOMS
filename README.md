@@ -1,5 +1,7 @@
 # TOMS
-Scripts to compute the criticality of the Turing bifurcation
+Villar-Sepúlveda, E., & Champneys, A. (2023). Computation of Turing Bifurcation Normal Form for n-Component Reaction-Diffusion Systems. ACM Transactions on Mathematical Software, 49(4), 1-24.
+
+Scripts to compute the criticality of the Turing bifurcation.
 
 There are two folders. In the folder 'Python + Mathematica', you need to run two scripts to get the bifurcation curves. Though this seems to be more complicated, the combination of scripts can be more efficient than the script in the other folder that does all the calculation in Mathematica. You are free to run both or make use of the one you feel most comfortable with.
 
