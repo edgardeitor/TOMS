@@ -27,13 +27,15 @@ numberofzerotemporalderivatives=0
 
 crosspar=''
 
-equilibrium=[]
-
 fifthcoef='y'
+
+considerC3='n'
 
 orthogonal='n'
 
 cod2='y'
+
+alphaval='n'
 
 plot2d='y'
 

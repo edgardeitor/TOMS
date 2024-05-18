@@ -1,7 +1,7 @@
 parameters={'r': 0,
         'q_c': 1,
         'b3': 1,
-        'b5': 1,
+        'b5': 1
         }
 
 var=['u',
@@ -10,7 +10,7 @@ var=['u',
 diffmatrix=[[0, -1],
             [-1, 0]]
 
-kinetics=['r*u-q_c**4*u-2*q_c**2*v+b3*u**3-b5*u**5',
+kinetics=['r*u - q_c**4*u - 2*q_c**2*v + b3*u**3 - b5*u**5',
           'v']
 
 tol=1e-7
@@ -25,13 +25,15 @@ numberofzerotemporalderivatives=1
 
 crosspar=''
 
-equilibrium=[]
-
 fifthcoef='y'
+
+considerC3='n'
 
 orthogonal='n'
 
 cod2='n'
+
+alphaval='n'
 
 plot2d='n'
 
