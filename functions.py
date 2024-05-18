@@ -132,3 +132,10 @@ def critical_linearsolver(vector, negativeRHS, criticalcol, coefsubmatrix, subma
                                                              coefsubmatrix.actualcoord[row,col])
                 
     return vector
+
+def write_vector(vector, file):
+    for varnum in range(nvar):
+        if varnum<nvar - 1:
+            file.write(latex(vector.actualcoord[varnum]) + ',')
+        else:
+            file.write(latex(vector.actualcoord[varnum]) + '\n')
