@@ -134,6 +134,7 @@ def critical_linearsolver(vector, negativeRHS, criticalcol, coefsubmatrix, subma
     return vector
 
 def write_vector(vector, file):
+    '''This function saves the coordinates of a vector into a text file'''
     for varnum in range(nvar):
         if varnum<nvar - 1:
             file.write(latex(vector.actualcoord[varnum]) + ',')
