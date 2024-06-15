@@ -171,12 +171,12 @@ if isinstance(eq,list) and len(eq)>1:
     print('Your system has ' + str(len(eq)) + ' real equilibria for the given parameter values given by:')
     for eqnum in range(len(eq)):
         print(str(eqnum+1) + '.- ' + str(eq[eqnum]) + '\n')
-    eqnumber=input('Enter the number of the equilibrium point you want to consider: ')
+    eqnumber = input('Enter the number of the equilibrium point you want to consider: ')
     while not eqnumber.isnumeric() or int(eqnumber)==0:
         eqnumber=input('What you entered before is not a positive integer. ' +
                        'Enter the number of the equilibrium point you want to consider: ')
-    eqnumber=int(eqnumber)
-    eq=Matrix(list(eq[eqnumber-1]))
+    eqnumber = int(eqnumber)
+    eq = Matrix(list(eq[eqnumber - 1]))
 elif isinstance(eq,list) and len(eq)==1:
     print('Your system has only one real equilibrium point given by:')
     eqnumber=0
@@ -191,10 +191,11 @@ muNF = symbols('mu_NF')
 
 eigval = symbols('eigval', real=True)
 
-coefmat0 = matrix('coef0mat', nvar, jacobianmat)
-coefmat1 = matrix('coef1mat', nvar, Add(jacobianmat, Mul(-1, muNF, diffmatrix), Mul(-1, eigval, eye(nvar))))
-coefmat2 = matrix('coef2mat', nvar, Add(jacobianmat, Mul(-1, 4, muNF, diffmatrix)))
-coefmat3 = matrix('coef3mat', nvar, Add(jacobianmat, Mul(-1, 9, muNF, diffmatrix)))
+for counter in range(4):
+    if counter==1:
+        coefmat1 = matrix('coef1mat', nvar, Add(jacobianmat, Mul(-1, muNF, diffmatrix), Mul(-1, eigval, eye(nvar))))
+    else:
+        exec(f'coefmat{counter} = matrix("coef{counter}mat", nvar, Add(jacobianmat, Mul(- Pow(counter, 2), muNF, diffmatrix)))')
 
 '''The Jacobian matrix can be complicated algebraically so the script computes the determinant of a
 dummy matrix to simplify the process.'''
